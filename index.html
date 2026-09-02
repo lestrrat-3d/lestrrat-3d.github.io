@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lestrrat-3d — a Go toolchain for CAD</title>
+<meta name="description" content="3D and CAD modules by lestrrat: typed units, coordinate math, a parametric 2D sketch engine, a headless CAD kernel, a mesh renderer, and models.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%230b1020'/><path d='M8 2.5 13 5.4v5.2L8 13.5 3 10.6V5.4z' fill='none' stroke='%235ad1e6' stroke-width='1.2'/><path d='M3 5.4 8 8.3l5-2.9M8 8.3v5.2' fill='none' stroke='%235ad1e6' stroke-width='1.2'/></svg>">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">github.com/lestrrat-3d</p>
+    <h1>A Go toolchain for CAD,<br>from typed units up to rendered pixels.</h1>
+    <p class="lede">
+      Five libraries that stack into a headless CAD pipeline, plus the tools
+      built on top of it. Everything here is driven from code — no GUI, no document
+      format, no hidden ambient units.
+    </p>
+    <p class="cta">
+      <a class="btn" href="https://github.com/orgs/lestrrat-3d/repositories">All repositories</a>
+      <a class="btn btn-ghost" href="#stack">The stack</a>
+    </p>
+  </div>
+</header>
+
+<main>
+
+<section id="stack" class="wrap section">
+  <h2>The stack</h2>
+  <p class="section-lede">
+    Each layer depends only on the ones beneath it, and never the other way around.
+    Any layer is usable on its own.
+  </p>
+
+  <ol class="stack">
+    <li class="layer layer-render">
+      <a href="https://github.com/lestrrat-3d/solidlens">
+        <span class="layer-name">solidlens</span>
+        <span class="layer-role">Renders a mesh to pixels</span>
+      </a>
+    </li>
+    <li class="layer layer-cad">
+      <a href="https://github.com/lestrrat-3d/decad">
+        <span class="layer-name">decad</span>
+        <span class="layer-role">3D bodies, features, verification</span>
+      </a>
+    </li>
+    <li class="layer layer-sketch">
+      <a href="https://github.com/lestrrat-3d/sketch">
+        <span class="layer-name">sketch</span>
+        <span class="layer-role">Parametric 2D constraint solving</span>
+      </a>
+    </li>
+    <li class="layer layer-r3">
+      <a href="https://github.com/lestrrat-3d/r3">
+        <span class="layer-name">r3</span>
+        <span class="layer-role">Vectors, frames, rigid transforms</span>
+      </a>
+    </li>
+    <li class="layer layer-units">
+      <a href="https://github.com/lestrrat-3d/units">
+        <span class="layer-name">units</span>
+        <span class="layer-role">Typed quantities and their kinds</span>
+      </a>
+    </li>
+  </ol>
+</section>
+
+<section class="wrap section">
+  <h2>Libraries</h2>
+
+  <article class="card" id="units">
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/units">units</a></h3>
+      <p class="tagline">Units of measure for Go.</p>
+      <p>
+        A <code>Value</code> is a magnitude paired with the unit it is expressed in. A
+        <code>Kind</code> is a vector of exponents over length, mass and angle, so kinds
+        compose: multiply two lengths and you get an area, divide mass by volume and you
+        get a density. Asking for a length in degrees returns an error rather than a
+        silent reinterpretation, which is how the classic CAD-API trap — <code>2</code>
+        quietly meaning 2 radians — stops happening.
+      </p>
+      <pre><code>w := units.Millimeters(100)
+in, err := w.In(units.Inch)       // 3.937...
+_, err = w.Convert(units.Degree)  // error: a length is not an angle</code></pre>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">standard library only</span></p>
+    </div>
+  </article>
+
+  <article class="card" id="r3">
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/r3">r3</a></h3>
+      <p class="tagline">Coordinate math for Euclidean 3-space.</p>
+      <p>
+        A <code>Vec</code> vector type, an orthonormal right-handed <code>Frame</code>
+        that carries the transform between a plane's local <code>(u, v, w)</code>
+        coordinates and world <code>(x, y, z)</code>, and a <code>Transform</code> for
+        rigid motion of the space itself. Angles are typed, so no bare radians cross an
+        API boundary. Points translate and directions do not.
+      </p>
+      <pre><code>spin, err := r3.RotationAround(
+    r3.NewVec(10, 0, 0), r3.NewVec(0, 0, 1), units.Degrees(30),
+)
+p := spin.Apply(pt)      // a POINT: rotated, then moved
+n := spin.ApplyDir(nrm)  // a DIRECTION: rotated only</code></pre>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">depends on units</span></p>
+    </div>
+  </article>
+
+  <article class="card card-wide" id="sketch">
+    <figure class="card-figure card-figure-contain" style="--plate:#ffffff">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/sketch/main/docs/images/banner.svg"
+           alt="The word 'sketch' in outlined letters over a CAD grid and frame, above the tagline 'A headless parametric 2D sketch engine'"
+           loading="lazy" width="640" height="200">
+    </figure>
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/sketch">sketch</a></h3>
+      <p class="tagline">A headless parametric 2D sketch engine, in the spirit of Fusion's sketch environment.</p>
+      <p>
+        You build points, lines, circles, arcs, ellipses and splines in code, tie them
+        together with geometric and dimensional constraints, and a Levenberg–Marquardt
+        solver moves the geometry until every constraint holds at once. Dimensions are
+        ordinary editable values, so changing one and re-solving updates the sketch.
+      </p>
+      <ul class="features">
+        <li>A Fusion-like constraint set: coincidence, tangency, parallel, perpendicular, symmetry, equality and more.</li>
+        <li>Degrees-of-freedom and redundancy analysis, conflict detection, and a multi-solution ambiguity probe.</li>
+        <li>Trim, extend, break, fillet, chamfer, mirror, pattern and offset on committed geometry.</li>
+        <li>Closed-region profile detection with exact areas and hole nesting.</li>
+        <li>Export to SVG and PNG — optionally annotated with dimensions and constraint glyphs — plus DXF R12 and lossless JSON.</li>
+      </ul>
+      <pre><code>w := sketch.NewWorld()
+s, err := w.CreateSketch(w.XY())
+
+a, b, d := s.CreatePoint(0, 0), s.CreatePoint(18, 2), s.CreatePoint(1, 13)
+ab, ad := s.CreateLine(a, b), s.CreateLine(a, d)
+s.Fix(a)                                    // ground one corner
+s.AddConstraint(sketch.NewHorizontal(ab), sketch.NewVertical(ad))
+
+width := sketch.NewDistance(a, b, 20)       // a driving dimension
+s.AddConstraint(width)
+
+res, err := s.Solve(ctx)                    // res.DOF == 0: fully constrained
+width.Set(35)                               // re-solve and the geometry follows</code></pre>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">depends on r3, units</span></p>
+    </div>
+  </article>
+
+  <article class="card card-wide" id="decad">
+    <figure class="card-figure" style="--plate:#eaeff7">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/hero.png"
+           alt="Dimensional DECAD lettering rendered from decad solids against a pale blue-gray background"
+           loading="lazy" width="900" height="300">
+    </figure>
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/decad">decad</a> <span class="badge">work in progress</span></h3>
+      <p class="tagline">Deconstructed CAD: a headless CAD engine for Go.</p>
+      <p>
+        The 3D modeling layer above <a href="#sketch">sketch</a> and <a href="#r3">r3</a>.
+        It exists so that a part can be proven before anyone commits to building it in
+        real CAD software: is the body watertight, does it self-intersect, what is its
+        volume and centroid, do these two bodies collide, is any wall thinner than the
+        end mill that has to cut it. Being wrong here is cheap.
+      </p>
+      <p>
+        The public API is landing incrementally against an approved design, so what the
+        package exports today is the leading edge of a larger contract.
+      </p>
+      <pre><code>doc := decad.New()
+body, err := doc.Extrude(s, s.Profiles()[0],
+    decad.Distance{D: units.Millimeters(10), Dir: decad.Along})
+
+vol, err := body.Volume()
+fmt.Println(vol.Value, vol.Exactness)       // 60000 mm^3 Exact
+
+report, err := doc.Verify(ctx)              // solidity, quantities, interference
+fmt.Println(report.Status, report.Trustworthy())
+// Sound true</code></pre>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">depends on sketch, r3, units</span></p>
+    </div>
+  </article>
+
+  <article class="card card-wide" id="solidlens">
+    <figure class="card-figure" style="--plate:#0d1935">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/solidlens/main/docs/images/hero.png"
+           alt="The word Solidlens rendered in 3D above a cyan sphere, a violet pyramid, and a coral cube, on a deep navy background"
+           loading="lazy" width="900" height="300">
+    </figure>
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/solidlens">solidlens</a></h3>
+      <p class="tagline">A pure-Go headless raster renderer for triangle meshes.</p>
+      <p>
+        It loads STL, 3MF and OBJ files, or takes a <code>*decad.Mesh</code> directly, and
+        renders a configured scene to an <code>image.RGBA</code> or a PNG stream. The scene
+        owns the camera, materials, directional and point lights and background; the
+        renderer owns only the output size, so independent scenes render concurrently.
+      </p>
+      <p>
+        Edge drawing follows the geometry rather than the tessellation: a line appears on a
+        border, on a silhouette, or where two faces meet above the crease angle, so a curved
+        surface keeps its outline instead of turning into a grid of facets.
+      </p>
+      <figure class="gallery">
+        <img src="https://raw.githubusercontent.com/lestrrat-3d/solidlens/main/docs/images/mechanical.png"
+             alt="A cyan wheel with raised spokes beside a gold faceted cylinder and dome" loading="lazy">
+        <img src="https://raw.githubusercontent.com/lestrrat-3d/solidlens/main/docs/images/forms.png"
+             alt="A pink sphere, green block, and blue faceted cone" loading="lazy">
+      </figure>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">reads STL, 3MF, OBJ</span></p>
+    </div>
+  </article>
+</section>
+
+<section class="wrap section">
+  <h2>Built on the stack</h2>
+
+  <article class="card card-wide" id="gear-generator">
+    <figure class="card-figure card-figure-row" style="--plate:#a0a4ad">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/spur.png"
+           alt="A cyan spur gear with a central bore, teeth running straight across the rim" loading="lazy">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/helical.png"
+           alt="A violet helical gear, its teeth twisting evenly around the rim" loading="lazy">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/herringbone.png"
+           alt="An amber herringbone gear, its teeth meeting in a chevron at mid-height" loading="lazy">
+    </figure>
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/fusion360-gear-generator">fusion360-gear-generator</a> <span class="badge">work in progress</span></h3>
+      <p class="tagline">Yet another gear generator for Fusion 360 — this one leaves fully constrained sketches behind.</p>
+      <p>
+        Spur, helical, herringbone and bevel gears, plus a cycloidal drive that builds its
+        lobed discs, eccentric cam, ring housing and output plate as separate sub-components.
+        Gears can be placed on any plane, surface or point pair, and the sketches come out
+        fully constrained, so moving or editing a generated gear behaves.
+      </p>
+      <p>
+        Those images are gears the generator actually cut, rendered with
+        <a href="#solidlens">solidlens</a>.
+      </p>
+      <p class="meta"><span class="chip chip-py">Python</span><span class="chip">Fusion 360 add-in</span></p>
+    </div>
+  </article>
+
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    The parts behind the headline are not stock art. <a href="#sketch">sketch</a> solves their
+    profiles, <a href="#decad">decad</a> extrudes each one, sets it down on what is under it and
+    proves that nothing interpenetrates, and <a href="#solidlens">solidlens</a> rasterizes the
+    scene. The generator is <code>tools/hero</code> in this repository.
+  </p>
+  <p>
+    The source for this page lives in
+    <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io">lestrrat-3d.github.io</a>.
+  </p>
+</footer>
+
+</body>
+</html>
