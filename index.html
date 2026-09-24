@@ -146,6 +146,17 @@ s.AddConstraint(width)
 
 res, err := s.Solve(ctx)                    // res.DOF == 0: fully constrained
 width.Set(35)                               // re-solve and the geometry follows</code></pre>
+      <figure class="gallery" aria-label="sketch examples">
+        <img src="https://raw.githubusercontent.com/lestrrat-3d/sketch/main/docs/images/quickstart.svg"
+             alt="A grounded rectangle with width and height dimensions and constraint markers"
+             loading="lazy" width="560" height="427">
+        <img src="https://raw.githubusercontent.com/lestrrat-3d/sketch/main/docs/images/profiles.svg"
+             alt="A filled rectangular profile with a circular hole on a CAD grid"
+             loading="lazy" width="560" height="427">
+        <img src="https://raw.githubusercontent.com/lestrrat-3d/sketch/main/docs/images/fillet-after.svg"
+             alt="A rectangle with its upper-right corner rounded by a fillet"
+             loading="lazy" width="560" height="427">
+      </figure>
       <p class="meta"><span class="chip chip-go">Go</span><span class="chip">depends on r3, units</span></p>
     </div>
   </article>
