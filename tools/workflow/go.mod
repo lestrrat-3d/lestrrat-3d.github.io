@@ -1,0 +1,19 @@
+module github.com/lestrrat-3d/lestrrat-3d.github.io/tools/workflow
+
+go 1.26.8
+
+require (
+	github.com/lestrrat-3d/decad v0.0.0-20260906113258-f200324e2a14
+	github.com/lestrrat-3d/sketch v0.0.0-20260905104222-34765bc10360
+	github.com/lestrrat-3d/solidlens v0.0.0-20260905044249-315b59149f90
+	github.com/lestrrat-3d/units v0.0.0-20260905131018-03b7385d1af7
+)
+
+require (
+	github.com/lestrrat-3d/r3 v0.0.0-20260904102550-456163073bdd // indirect
+	github.com/lestrrat-go/3mf v0.0.0-20260904080955-978cc39ea83e // indirect
+	github.com/lestrrat-go/helium v0.8.0 // indirect
+	github.com/lestrrat-go/option/v3 v3.0.0-alpha1 // indirect
+	github.com/lestrrat-go/stl v0.0.0-20260904080308-f2792ffa3582 // indirect
+	golang.org/x/text v0.41.0 // indirect
+)

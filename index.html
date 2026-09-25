@@ -29,15 +29,62 @@
 <main>
 
 <section class="wrap section" id="purpose">
-  <h2>How we use these tools</h2>
-  <p class="section-lede">
-    An AI agent can write a CAD add-in, but it needs to run the modeling steps to
-    see whether they create the intended part. With these libraries, it can work
-    out those steps in code: set dimensions, make a 2D sketch, build and check a
-    3D model, and render the result. The agent can revise the steps and run them
-    again before generating an add-in or script for Fusion, FreeCAD, Onshape, or
-    another CAD application.
-  </p>
+  <div class="purpose-layout">
+    <div class="purpose-copy">
+      <h2>How we use these tools</h2>
+      <p class="section-lede">
+        An AI agent can write a CAD add-in, but it needs to run the modeling steps to
+        see whether they create the intended part. With these libraries, it can work
+        out those steps in code: set dimensions, make a 2D sketch, build and check a
+        3D model, and render the result. The agent can revise the steps and run them
+        again before generating an add-in or script for Fusion, FreeCAD, Onshape, or
+        another CAD application.
+      </p>
+    </div>
+
+    <figure class="workflow-diagram">
+      <figcaption>An agent's CAD test loop</figcaption>
+      <ol class="workflow-stages">
+        <li class="workflow-stage">
+          <span class="workflow-number" aria-hidden="true">01</span>
+          <div>
+            <strong>Write modeling steps</strong>
+            <span class="workflow-detail">Set dimensions, sketches, and features.</span>
+          </div>
+        </li>
+        <li class="workflow-stage workflow-stage-test">
+          <div class="workflow-stage-head">
+            <span class="workflow-number" aria-hidden="true">02</span>
+            <div>
+              <strong>Run and check the result</strong>
+              <span class="workflow-detail">The same steps produce a sketch and a 3D model.</span>
+            </div>
+          </div>
+          <div class="workflow-previews">
+            <div class="workflow-preview workflow-preview-sketch">
+              <img src="workflow-sketch.png" alt="A two-hole plate drawn as a 2D sketch" width="580" height="400">
+              <span>sketch</span>
+            </div>
+            <span class="workflow-preview-arrow" aria-hidden="true">→</span>
+            <div class="workflow-preview workflow-preview-model">
+              <img src="workflow-model.png" alt="The same plate rendered as a 3D body" width="700" height="460">
+              <span>3D model</span>
+            </div>
+          </div>
+          <p class="workflow-check">✓ Geometry check passed</p>
+          <p class="workflow-feedback">↶ If it needs work, revise and run the steps again.</p>
+        </li>
+        <li class="workflow-stage workflow-stage-output">
+          <span class="workflow-number" aria-hidden="true">03</span>
+          <div>
+            <strong>Generate code for a CAD app</strong>
+            <span class="workflow-detail">For example:</span>
+            <span class="workflow-targets"><span>Fusion</span><span>FreeCAD</span><span>Onshape</span></span>
+          </div>
+        </li>
+      </ol>
+    </figure>
+  </div>
 </section>
 
 <section id="stack" class="wrap section">
