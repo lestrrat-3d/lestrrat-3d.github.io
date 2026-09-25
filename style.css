@@ -288,15 +288,20 @@ h2 {
 .workflow-down-run { width: 45%; margin: 0.45rem 0 0.45rem 55%; }
 
 .workflow-check {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 160px);
-  gap: 0.5rem;
-  align-items: center;
   border-left: 3px solid var(--amber);
 }
 
-.workflow-check img { width: 100%; height: auto; }
-.workflow-status { display: block; margin-top: 0.3rem; color: var(--green); font-size: 0.75rem; }
+.workflow-results {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  color: var(--fg-muted);
+  font-family: var(--mono);
+  font-size: 0.73rem;
+}
+
+.workflow-results b { margin-right: 0.35rem; color: var(--green); }
+.workflow-result-review b { color: var(--amber); }
 
 .workflow-return {
   display: flex;
@@ -343,11 +348,6 @@ h2 {
 
 @media (max-width: 760px) {
   .purpose-layout { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 440px) {
-  .workflow-check { grid-template-columns: 1fr; }
-  .workflow-check img { max-height: 125px; object-fit: contain; }
 }
 
 /* ---------- stack diagram ---------- */
