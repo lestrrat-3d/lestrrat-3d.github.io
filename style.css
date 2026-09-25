@@ -186,6 +186,170 @@ h2 {
   color: var(--fg-muted);
 }
 
+/* ---------- agent workflow ---------- */
+
+.purpose-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.workflow-diagram {
+  min-width: 0;
+  margin: 0;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+
+.workflow-diagram figcaption {
+  margin-bottom: 1rem;
+  color: var(--fg-faint);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.workflow-goal {
+  width: fit-content;
+  margin-inline: auto;
+  padding: 0.4rem 1.15rem;
+  border: 1px solid var(--violet);
+  border-radius: 999px;
+  background: #9b8cf01a;
+  color: var(--violet);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.workflow-down { color: var(--fg-faint); font-size: 1.2rem; line-height: 1; text-align: center; }
+.workflow-diagram > .workflow-down { padding: 0.5rem 0; }
+
+.workflow-loop {
+  position: relative;
+  padding: 1rem 1rem 1rem clamp(1.8rem, 7vw, 2.5rem);
+  border: 1px solid #5ad1e680;
+  border-radius: 8px;
+  background: var(--bg-sunken);
+}
+
+.workflow-loop > :not(.workflow-return-path) { position: relative; }
+.workflow-return-path { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.workflow-return-path path { fill: none; stroke: var(--amber); stroke-width: 2; stroke-linecap: round; }
+
+.workflow-loop-title {
+  margin: 0 0 0.8rem;
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.workflow-write-run {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.2rem minmax(0, 1fr);
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.workflow-node {
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--bg-raised);
+}
+
+.workflow-node-kicker {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--fg-faint);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+
+.workflow-node strong {
+  display: block;
+  color: var(--fg);
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.workflow-agent { border-left: 3px solid var(--violet); }
+.workflow-run { border-left: 3px solid var(--cyan); }
+.workflow-right { color: var(--cyan); font-size: 1.2rem; text-align: center; }
+.workflow-down-run { width: 45%; margin: 0.45rem 0 0.45rem 55%; }
+
+.workflow-check {
+  border-left: 3px solid var(--amber);
+}
+
+.workflow-results {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  color: var(--fg-muted);
+  font-family: var(--mono);
+  font-size: 0.73rem;
+}
+
+.workflow-results b { margin-right: 0.35rem; color: var(--green); }
+.workflow-result-review b { color: var(--amber); }
+
+.workflow-return {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  height: 40px;
+  margin-top: 0.5rem;
+  color: var(--amber);
+  font-size: 0.76rem;
+}
+
+.workflow-return span { padding: 0 0.4rem; background: var(--bg-sunken); }
+
+.workflow-pass {
+  display: grid;
+  justify-items: center;
+  padding: 0.35rem 0;
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.workflow-pass span:last-child { font-size: 1.2rem; }
+
+.workflow-output {
+  padding: 0.75rem 1rem;
+  border: 1px solid #63d29a80;
+  border-radius: 6px;
+  background: #63d29a12;
+  text-align: center;
+}
+
+.workflow-output strong { display: block; color: var(--fg); font-size: 0.9rem; }
+.workflow-targets { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.5rem; }
+.workflow-targets span {
+  padding: 0.12rem 0.4rem;
+  border: 1px solid #63d29a55;
+  border-radius: 4px;
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+}
+
+@media (max-width: 760px) {
+  .purpose-layout { grid-template-columns: 1fr; }
+}
+
 /* ---------- stack diagram ---------- */
 
 .stack {
