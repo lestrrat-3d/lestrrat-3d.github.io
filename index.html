@@ -48,31 +48,32 @@
         <li class="workflow-stage">
           <span class="workflow-number" aria-hidden="true">01</span>
           <div>
-            <strong>Write modeling steps</strong>
-            <span class="workflow-detail">Set dimensions, sketches, and features.</span>
+            <strong>Agent writes CAD steps</strong>
+            <span class="workflow-detail">Goal: leave at least 10 mm outside each mounting hole.</span>
           </div>
         </li>
         <li class="workflow-stage workflow-stage-test">
           <div class="workflow-stage-head">
             <span class="workflow-number" aria-hidden="true">02</span>
             <div>
-              <strong>Run and check the result</strong>
-              <span class="workflow-detail">The same steps produce a sketch and a 3D model.</span>
+              <strong>Run, check, and revise</strong>
+              <span class="workflow-detail">Compare each 3D result with the goal.</span>
             </div>
           </div>
           <div class="workflow-previews">
-            <div class="workflow-preview workflow-preview-sketch">
-              <img src="workflow-sketch.png" alt="A two-hole plate drawn as a 2D sketch" width="580" height="400">
-              <span>sketch</span>
+            <div class="workflow-preview workflow-preview-first">
+              <img src="workflow-first.png" alt="First plate with mounting holes close to its outer edges" width="700" height="460">
+              <span>First run</span>
+              <span class="workflow-result">2 mm margin · needs revision</span>
             </div>
             <span class="workflow-preview-arrow" aria-hidden="true">→</span>
-            <div class="workflow-preview workflow-preview-model">
-              <img src="workflow-model.png" alt="The same plate rendered as a 3D body" width="700" height="460">
-              <span>3D model</span>
+            <div class="workflow-preview workflow-preview-revised">
+              <img src="workflow-revised.png" alt="Revised plate with mounting holes moved inward" width="700" height="460">
+              <span>After revision</span>
+              <span class="workflow-result">14 mm margin · goal met</span>
             </div>
           </div>
-          <p class="workflow-check">✓ Geometry check passed</p>
-          <p class="workflow-feedback">↶ If it needs work, revise and run the steps again.</p>
+          <p class="workflow-feedback">↶ The agent moves the holes inward and runs the steps again.</p>
         </li>
         <li class="workflow-stage workflow-stage-output">
           <span class="workflow-number" aria-hidden="true">03</span>

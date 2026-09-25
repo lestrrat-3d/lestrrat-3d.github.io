@@ -1,5 +1,5 @@
-// Command workflow generates the sketch and verified model shown in the site's
-// agent workflow infographic. Run it with:
+// Command workflow renders two real CAD attempts for the site's agent workflow
+// infographic. Run it with:
 //
 //	go -C tools/workflow run . -out ../../workflow
 package main
@@ -28,17 +28,56 @@ func run() error {
 	out := flag.String("out", "../../workflow", "output file prefix")
 	flag.Parse()
 	ctx := context.Background()
+	const requiredMargin = 10
+	attempts := []struct {
+		name       string
+		holeOffset float64
+		wantPass   bool
+		image      []byte
+	}{
+		{name: "first", holeOffset: 38, wantPass: false},
+		{name: "revised", holeOffset: 26, wantPass: true},
+	}
+	for i := range attempts {
+		a := &attempts[i]
+		// Solid verification and the edge-margin design rule answer different questions.
+		margin := plateHalfWidth - a.holeOffset - holeRadius
+		if (margin >= requiredMargin) != a.wantPass {
+			return fmt.Errorf("%s attempt has unexpected edge margin: %.1f mm", a.name, margin)
+		}
+		var err error
+		a.image, err = renderPlate(ctx, a.holeOffset)
+		if err != nil {
+			return fmt.Errorf("render %s attempt: %w", a.name, err)
+		}
+		fmt.Fprintf(os.Stderr, "%s: %.0f mm edge margin; solid geometry sound\n", a.name, margin)
+	}
+	for _, a := range attempts {
+		if err := os.WriteFile(*out+"-"+a.name+".png", a.image, 0o644); err != nil {
+			return fmt.Errorf("write %s image: %w", a.name, err)
+		}
+	}
+	return nil
+}
+
+const (
+	plateHalfWidth  = 48
+	plateHalfHeight = 30
+	holeRadius      = 8
+)
+
+func renderPlate(ctx context.Context, holeOffset float64) ([]byte, error) {
 
 	w := sketch.NewWorld()
 	s, err := w.CreateSketch(w.XY())
 	if err != nil {
-		return fmt.Errorf("create sketch: %w", err)
+		return nil, fmt.Errorf("create sketch: %w", err)
 	}
-	s.CreateRectangle(-48, -30, 48, 30)
-	s.CreateCircle(s.CreatePoint(-26, 0), 8)
-	s.CreateCircle(s.CreatePoint(26, 0), 8)
+	s.CreateRectangle(-plateHalfWidth, -plateHalfHeight, plateHalfWidth, plateHalfHeight)
+	s.CreateCircle(s.CreatePoint(-holeOffset, 0), holeRadius)
+	s.CreateCircle(s.CreatePoint(holeOffset, 0), holeRadius)
 	if _, err := s.Solve(ctx); err != nil {
-		return fmt.Errorf("solve sketch: %w", err)
+		return nil, fmt.Errorf("solve sketch: %w", err)
 	}
 
 	var profile *sketch.Profile
@@ -49,36 +88,25 @@ func run() error {
 		}
 	}
 	if profile == nil || !profile.Valid {
-		return fmt.Errorf("sketch did not produce a valid two-hole plate")
-	}
-
-	sketchImage, err := s.PNG(
-		sketch.WithGrid(true),
-		sketch.WithShowPoints(false),
-		sketch.WithProfileFill(true),
-		sketch.WithScale(5),
-	)
-	if err != nil {
-		return fmt.Errorf("render sketch: %w", err)
+		return nil, fmt.Errorf("sketch did not produce a valid two-hole plate")
 	}
 
 	doc := decad.New()
 	body, err := doc.Extrude(s, profile, decad.Distance{D: units.Millimeters(9), Dir: decad.Along})
 	if err != nil {
-		return fmt.Errorf("extrude plate: %w", err)
+		return nil, fmt.Errorf("extrude plate: %w", err)
 	}
 	report, err := doc.Verify(ctx)
 	if err != nil {
-		return fmt.Errorf("verify plate: %w", err)
+		return nil, fmt.Errorf("verify plate: %w", err)
 	}
 	if report.Status != decad.Sound {
-		return fmt.Errorf("plate verification: %s", report.Status)
+		return nil, fmt.Errorf("plate verification: %s", report.Status)
 	}
-	fmt.Fprintln(os.Stderr, "plate verification: sound")
 
 	mesh, err := body.TessellateContext(ctx, units.Millimeters(0.15))
 	if err != nil {
-		return fmt.Errorf("tessellate plate: %w", err)
+		return nil, fmt.Errorf("tessellate plate: %w", err)
 	}
 	scene := solidlens.Scene{
 		Camera: solidlens.Camera{
@@ -104,13 +132,7 @@ func run() error {
 	}
 	var modelImage bytes.Buffer
 	if err := solidlens.RenderPNG(ctx, &modelImage, scene, solidlens.Settings{Width: 700, Height: 460}); err != nil {
-		return fmt.Errorf("render model: %w", err)
+		return nil, fmt.Errorf("render model: %w", err)
 	}
-	if err := os.WriteFile(*out+"-sketch.png", sketchImage, 0o644); err != nil {
-		return fmt.Errorf("write sketch: %w", err)
-	}
-	if err := os.WriteFile(*out+"-model.png", modelImage.Bytes(), 0o644); err != nil {
-		return fmt.Errorf("write model: %w", err)
-	}
-	return nil
+	return modelImage.Bytes(), nil
 }
