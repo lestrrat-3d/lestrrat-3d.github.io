@@ -354,6 +354,25 @@ h2 {
 }
 .gallery img { border: 1px solid var(--rule); border-radius: 6px; }
 
+.feature-gallery .feature {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--bg-sunken);
+}
+.feature-gallery .feature img { border: 0; border-radius: 0; }
+.feature-gallery .feature figcaption {
+  padding: 0.75rem 0.85rem 0.85rem;
+  color: var(--fg-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.feature-gallery .feature figcaption strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
 /* ---------- footer ---------- */
 
 footer {
