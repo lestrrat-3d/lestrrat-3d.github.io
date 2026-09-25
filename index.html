@@ -34,56 +34,52 @@
       <h2>How we use these tools</h2>
       <p class="section-lede">
         An AI agent can write a CAD add-in, but it needs to run the modeling steps to
-        see whether they create the intended part. With these libraries, it can work
-        out those steps in code: set dimensions, make a 2D sketch, build and check a
-        3D model, and render the result. The agent can revise the steps and run them
-        again before generating an add-in or script for Fusion, FreeCAD, Onshape, or
-        another CAD application.
+        see whether they create the intended part. These libraries let it build
+        and check the geometry, inspect a render, and revise the steps before
+        generating code for Fusion, FreeCAD, Onshape, or another CAD application.
       </p>
     </div>
 
     <figure class="workflow-diagram">
-      <figcaption>An agent's CAD test loop</figcaption>
-      <ol class="workflow-stages">
-        <li class="workflow-stage">
-          <span class="workflow-number" aria-hidden="true">01</span>
+      <figcaption>Test the steps before generating app code</figcaption>
+      <div class="workflow-goal">CAD goal</div>
+      <div class="workflow-down" aria-hidden="true">↓</div>
+      <div class="workflow-loop">
+        <svg class="workflow-return-path" viewBox="0 0 500 100" preserveAspectRatio="none"
+             aria-hidden="true" focusable="false">
+          <path d="M470 85 H26 Q18 85 18 77 V30 Q18 24 24 24 H40 M32 17 L40 24 L32 31"
+                vector-effect="non-scaling-stroke"/>
+        </svg>
+        <p class="workflow-loop-title">Agent development loop</p>
+        <div class="workflow-write-run">
+          <div class="workflow-node workflow-agent">
+            <span class="workflow-node-kicker">AI agent</span>
+            <strong>Write CAD steps</strong>
+          </div>
+          <span class="workflow-right" aria-hidden="true">→</span>
+          <div class="workflow-node workflow-run">
+            <span class="workflow-node-kicker">sketch + decad</span>
+            <strong>Run CAD steps</strong>
+          </div>
+        </div>
+        <div class="workflow-down workflow-down-run" aria-hidden="true">↓</div>
+        <div class="workflow-node workflow-check">
           <div>
-            <strong>Agent writes CAD steps</strong>
-            <span class="workflow-detail">Goal: leave at least 10 mm outside each mounting hole.</span>
+            <span class="workflow-node-kicker">Result</span>
+            <strong>Check geometry and inspect the render</strong>
+            <span class="workflow-status">✓ Body verified</span>
           </div>
-        </li>
-        <li class="workflow-stage workflow-stage-test">
-          <div class="workflow-stage-head">
-            <span class="workflow-number" aria-hidden="true">02</span>
-            <div>
-              <strong>Run, check, and revise</strong>
-              <span class="workflow-detail">Compare each 3D result with the goal.</span>
-            </div>
-          </div>
-          <div class="workflow-previews">
-            <div class="workflow-preview workflow-preview-first">
-              <img src="workflow-first.png" alt="First plate with mounting holes close to its outer edges" width="700" height="460">
-              <span>First run</span>
-              <span class="workflow-result">2 mm margin · needs revision</span>
-            </div>
-            <span class="workflow-preview-arrow" aria-hidden="true">→</span>
-            <div class="workflow-preview workflow-preview-revised">
-              <img src="workflow-revised.png" alt="Revised plate with mounting holes moved inward" width="700" height="460">
-              <span>After revision</span>
-              <span class="workflow-result">14 mm margin · goal met</span>
-            </div>
-          </div>
-          <p class="workflow-feedback">↶ The agent moves the holes inward and runs the steps again.</p>
-        </li>
-        <li class="workflow-stage workflow-stage-output">
-          <span class="workflow-number" aria-hidden="true">03</span>
-          <div>
-            <strong>Generate code for a CAD app</strong>
-            <span class="workflow-detail">For example:</span>
-            <span class="workflow-targets"><span>Fusion</span><span>FreeCAD</span><span>Onshape</span></span>
-          </div>
-        </li>
-      </ol>
+          <img src="workflow-model.png" alt="Verified two-hole plate rendered from the CAD steps" width="700" height="460">
+        </div>
+        <div class="workflow-return">
+          <span>Needs work? Revise and rerun</span>
+        </div>
+      </div>
+      <div class="workflow-pass"><span>Passes</span><span aria-hidden="true">↓</span></div>
+      <div class="workflow-output">
+        <strong>Generate code for a CAD app</strong>
+        <span class="workflow-targets"><span>Fusion</span><span>FreeCAD</span><span>Onshape</span></span>
+      </div>
     </figure>
   </div>
 </section>
