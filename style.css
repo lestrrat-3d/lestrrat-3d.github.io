@@ -398,6 +398,7 @@ h2 {
   color: var(--fg-faint);
 }
 
+.layer-animation { --accent: var(--violet); }
 .layer-render { --accent: var(--coral); }
 .layer-cad    { --accent: var(--amber); }
 .layer-sketch { --accent: var(--violet); }

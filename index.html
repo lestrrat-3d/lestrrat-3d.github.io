@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>lestrrat-3d — a Go toolchain for CAD</title>
-<meta name="description" content="3D and CAD modules by lestrrat: typed units, coordinate math, a parametric 2D sketch engine, a headless CAD kernel, a mesh renderer, and models.">
+<meta name="description" content="Go tools for CAD: typed units, coordinate math, parametric sketches, solid modeling, mesh rendering, and animation.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%230b1020'/><path d='M8 2.5 13 5.4v5.2L8 13.5 3 10.6V5.4z' fill='none' stroke='%235ad1e6' stroke-width='1.2'/><path d='M3 5.4 8 8.3l5-2.9M8 8.3v5.2' fill='none' stroke='%235ad1e6' stroke-width='1.2'/></svg>">
 </head>
@@ -15,7 +15,7 @@
     <p class="eyebrow">github.com/lestrrat-3d</p>
     <h1>A Go toolchain for CAD,<br>from typed units up to rendered pixels.</h1>
     <p class="lede">
-      Five libraries that stack into a headless CAD pipeline, plus the tools
+      Six libraries that stack into a headless CAD pipeline, plus the tools
       built on top of it. Everything here is driven from code — no GUI, no document
       format, no hidden ambient units.
     </p>
@@ -93,6 +93,12 @@
   </p>
 
   <ol class="stack">
+    <li class="layer layer-animation">
+      <a href="https://github.com/lestrrat-3d/kinetograph">
+        <span class="layer-name">kinetograph</span>
+        <span class="layer-role">Animates bodies, cameras, and lights</span>
+      </a>
+    </li>
     <li class="layer layer-render">
       <a href="https://github.com/lestrrat-3d/solidlens">
         <span class="layer-name">solidlens</span>
@@ -352,6 +358,28 @@ fmt.Println(report.Status, report.Trustworthy())
              alt="A pink sphere, green block, and blue faceted cone" loading="lazy">
       </figure>
       <p class="meta"><span class="chip chip-go">Go</span><span class="chip">reads STL, 3MF, OBJ</span></p>
+    </div>
+  </article>
+
+  <article class="card card-wide" id="kinetograph">
+    <figure class="card-figure" style="--plate:#d1dbe9">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/kinetograph/main/docs/images/hero.gif"
+           alt="Two pins drop into a drilled plate as a ring rises and turns, while the camera circles the assembly"
+           loading="lazy" width="640" height="480">
+    </figure>
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/kinetograph">kinetograph</a> <span class="badge">work in progress</span></h3>
+      <p class="tagline">Animate CAD bodies, cameras, and lights from Go.</p>
+      <p>
+        Kinetograph places <a href="#decad">decad</a> bodies on a joint rig and changes
+        their positions over time. Keyframed channels control rotations, slides, camera
+        motion, lighting, opacity, and parametric changes to a body's shape.
+        <a href="#solidlens">solidlens</a> renders each frame to a numbered PNG;
+        ffmpeg can turn the frames into a video.
+      </p>
+      <pre><code>cd _clips/demo &amp;&amp; go run . -out out
+ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp4</code></pre>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">renders PNG sequences</span></p>
     </div>
   </article>
 
