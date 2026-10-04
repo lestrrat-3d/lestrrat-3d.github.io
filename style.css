@@ -83,17 +83,29 @@ img { max-width: 100%; height: auto; display: block; }
 .hero {
   position: relative;
   overflow: hidden;
-  padding: clamp(3rem, 8vw, 5rem) 0 clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(2rem, 4vw, 3rem) 0;
   border-bottom: 1px solid var(--rule);
   background:
     radial-gradient(ellipse 90% 70% at 20% 0%, #5ad1e618, transparent 60%),
     radial-gradient(ellipse 70% 60% at 85% 10%, #9b8cf016, transparent 60%);
 }
 
-.hero-copy { max-width: 850px; }
+.hero .wrap { display: grid; }
+
+.hero-copy, .hero-showcase { grid-area: 1 / 1; }
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  text-shadow: 0 2px 14px #0b1020a8;
+}
 
 .hero-showcase {
-  margin: clamp(2rem, 5vw, 3rem) 0 0;
+  position: relative;
+  z-index: 1;
+  margin: 0;
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   overflow: hidden;
@@ -102,10 +114,19 @@ img { max-width: 100%; height: auto; display: block; }
 
 .hero-media { position: relative; }
 
+.hero-media::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(90deg, #0b1020ed 0%, #0b1020d6 42%, #0b10208c 72%, #0b10200d 100%);
+  pointer-events: none;
+}
+
 .hero-media img, .hero-promo {
   display: block;
   width: 100%;
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 12 / 7;
   object-fit: cover;
 }
 
@@ -113,8 +134,8 @@ img { max-width: 100%; height: auto; display: block; }
 
 .hero-toggle {
   position: absolute;
-  z-index: 1;
-  top: 0.75rem;
+  z-index: 2;
+  bottom: 0.75rem;
   right: 0.75rem;
   padding: 0.38rem 0.65rem;
   border: 1px solid #ffffff55;
@@ -143,10 +164,17 @@ img { max-width: 100%; height: auto; display: block; }
 
 .hero-showcase figcaption strong { color: var(--fg); font-weight: 600; }
 
+@media (max-width: 900px) {
+  .hero .wrap { display: block; }
+  .hero-copy { max-width: 850px; padding: 0; text-shadow: none; }
+  .hero-showcase { margin: clamp(2rem, 5vw, 3rem) 0 0; }
+  .hero-media::after { display: none; }
+}
+
 @media (max-width: 600px) {
   .hero-media img, .hero-promo { aspect-ratio: 1 / 1; }
   .hero-showcase figcaption { padding: 0.6rem 0.75rem; }
-  .hero-toggle { top: 0.4rem; right: 0.4rem; padding: 0.25rem 0.45rem; font-size: 0.65rem; }
+  .hero-toggle { bottom: 0.4rem; right: 0.4rem; padding: 0.25rem 0.45rem; font-size: 0.65rem; }
 }
 
 .eyebrow {

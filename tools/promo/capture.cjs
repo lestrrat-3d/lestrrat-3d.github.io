@@ -19,7 +19,7 @@ if (!outputDir || !Number.isInteger(fps) || !Number.isInteger(seconds) || fps < 
     args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
   });
   try {
-    const page = await browser.newPage({ viewport: { width: 1080, height: 540 } });
+    const page = await browser.newPage({ viewport: { width: 1080, height: 630 } });
     page.on('pageerror', error => console.error(error));
     await page.goto(pathToFileURL(path.join(__dirname, 'morph.html')).href);
     for (let frame = 0; frame < fps * seconds; frame++) {

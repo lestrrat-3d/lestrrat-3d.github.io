@@ -6,7 +6,7 @@
   html, body { margin: 0; background: #0b1020; }
   canvas { display: block; }
 </style>
-<canvas width="1080" height="540"></canvas>
+<canvas width="1080" height="630"></canvas>
 <script>
 const canvas = document.querySelector('canvas');
 const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
@@ -36,10 +36,16 @@ float phaseOffset(int row, int slot) {
     if (slot == 2) return 4.1;
     return 6.;
   }
-  if (slot == 0) return 7.5;
-  if (slot == 1) return 2.9;
-  if (slot == 2) return 10.;
-  return 1.4;
+  if (row == 1) {
+    if (slot == 0) return 7.5;
+    if (slot == 1) return 2.9;
+    if (slot == 2) return 10.;
+    return 1.4;
+  }
+  if (slot == 0) return 3.5;
+  if (slot == 1) return 5.7;
+  if (slot == 2) return 8.5;
+  return 11.;
 }
 
 vec3 turn(vec3 p, float angle) {
@@ -98,26 +104,29 @@ float shadow(vec3 p, vec3 light, float morphTime, float spin) {
 }
 
 vec3 material(int row, int slot, vec3 local) {
-  int hue = (slot + row * 2) % 4;
-  vec3 low, high;
-  if (hue == 0) {
-    low = vec3(.14, .62, .84); high = vec3(.75, .45, .95);
-  } else if (hue == 1) {
-    low = vec3(.58, .43, .89); high = vec3(.95, .68, .91);
-  } else if (hue == 2) {
-    low = vec3(.92, .39, .39); high = vec3(1., .72, .50);
-  } else {
-    low = vec3(.17, .72, .61); high = vec3(.62, .85, .96);
-  }
-  float blend = clamp(.5 + local.z * .30 + local.x * .20, 0., 1.);
-  return mix(low, high, blend);
+  int hue = row * 4 + slot;
+  vec3 base;
+  if (hue == 0) base = vec3(.02, .68, .88);
+  else if (hue == 1) base = vec3(.49, .24, .82);
+  else if (hue == 2) base = vec3(.91, .27, .24);
+  else if (hue == 3) base = vec3(.60, .78, .10);
+  else if (hue == 4) base = vec3(.75, .20, .56);
+  else if (hue == 5) base = vec3(.96, .52, .07);
+  else if (hue == 6) base = vec3(.04, .65, .38);
+  else if (hue == 7) base = vec3(.18, .36, .86);
+  else if (hue == 8) base = vec3(.80, .64, .09);
+  else if (hue == 9) base = vec3(.88, .25, .42);
+  else if (hue == 10) base = vec3(.04, .54, .62);
+  else base = vec3(.58, .30, .86);
+  float blend = clamp(.45 + local.z * .22 + local.x * .20, 0., 1.);
+  return mix(base, mix(base, vec3(1.), .28), blend);
 }
 
 void main() {
-  float rowHeight = resolution.y * .5;
+  float rowHeight = resolution.y / 3.;
   float cell = resolution.x * .25;
   int row = int(floor(gl_FragCoord.y / rowHeight));
-  float scroll = (row == 0 ? 1. : -1.) * resolution.x * time / 24.;
+  float scroll = (row % 2 == 0 ? 1. : -1.) * resolution.x * time / 24.;
   float along = gl_FragCoord.x - scroll;
   int column = int(floor(along / cell));
   int slot = ((column % 4) + 4) % 4;
@@ -125,13 +134,14 @@ void main() {
     gl_FragCoord.y - float(row) * rowHeight - rowHeight * .5);
   vec2 uv = localPixel / rowHeight;
   float morphTime = mod(time + phaseOffset(row, slot), 12.);
-  float spin = 2. * PI * time / 24. + float(slot) * .25 + float(row) * .17;
+  float direction = (slot + row) % 2 == 0 ? 1. : -1.;
+  float spin = direction * 2. * PI * time / 24. + float(slot) * .25 + float(row) * .17;
 
   vec3 eye = vec3(2.6, -3.7, 2.4);
   vec3 forward = normalize(-eye);
   vec3 right = normalize(cross(forward, vec3(0., 0., 1.)));
   vec3 up = cross(right, forward);
-  vec3 ray = normalize(forward * 1.72 + uv.x * right + uv.y * up);
+  vec3 ray = normalize(forward * 1.95 + uv.x * right + uv.y * up);
   vec3 bg = mix(vec3(.035, .055, .11), vec3(.075, .11, .19),
     clamp(gl_FragCoord.y / resolution.y, 0., 1.));
 

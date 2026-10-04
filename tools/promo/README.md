@@ -1,12 +1,13 @@
 # Header promo
 
-`morph.html` renders eight copies of one 3D shape sequence across two rows.
+`morph.html` renders twelve copies of one 3D shape sequence across three rows.
 Each cube changes size, gains chamfered and rounded edges, becomes a sphere,
 develops a hole, and becomes a torus. The copies start at different times in
-the sequence, so several shapes appear at once. They turn slowly while the
-upper row moves left and the lower row moves right. Each row advances by its
-full four-shape pattern over the 24-second loop. The shape sequence repeats
-twice and the turn completes one revolution, so the last frame joins the first.
+the sequence, so several shapes appear at once. Neighboring shapes use distinct
+colors and turn in opposite directions. The upper and lower rows move right;
+the middle row moves left. Each row advances by its full four-shape pattern over
+the 24-second loop. The shape sequence repeats twice and each turn completes
+one revolution, so the last frame joins the first.
 
 The models are signed-distance shapes rendered with WebGL2. They illustrate
 the geometry changes named in the caption; they are not output from Decad.
