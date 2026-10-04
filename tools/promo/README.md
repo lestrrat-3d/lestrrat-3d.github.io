@@ -1,7 +1,7 @@
 # Header promo
 
-This command uses the site's `hero.png` and the pinned Kavad module to render
-the animated header art. The site serves the committed WebM or MP4 file.
+This command draws a plate, ring, and pins as a moving wireframe with the
+pinned Kavad module. The site serves the committed WebM or MP4 file.
 
 Run these commands from the repository root. The capture step needs Node,
 Playwright with Chromium, and ffmpeg.
@@ -14,7 +14,8 @@ kavad_module_dir=$(go -C tools/promo list -m -f '{{.Dir}}' github.com/lestrrat-g
 NODE_PATH="$PWD/.tmp/promo-node/node_modules" node "$kavad_module_dir/capture/capture.cjs" .tmp/promo
 ffmpeg -y -i .tmp/promo/video.mp4 -c copy -movflags +faststart hero-promo.mp4
 ffmpeg -y -i hero-promo.mp4 -c:v libvpx-vp9 -b:v 0 -crf 34 -an hero-promo.webm
+ffmpeg -y -i .tmp/promo/video.mp4 -frames:v 1 hero-poster.png
 ```
 
-The video uses `hero.png` as its poster. Visitors who request reduced motion
-see the static `hero.png` background instead.
+The video uses `hero-poster.png` as its poster. Visitors who request reduced
+motion see that frame as a static background instead.

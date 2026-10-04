@@ -13,7 +13,7 @@
 <header class="hero">
   <div class="wrap">
     <video class="hero-promo" autoplay muted loop playsinline preload="metadata"
-           poster="hero.png" aria-hidden="true" tabindex="-1">
+           poster="hero-poster.png" aria-hidden="true" tabindex="-1">
       <source src="hero-promo.webm" type="video/webm">
       <source src="hero-promo.mp4" type="video/mp4">
     </video>
@@ -450,10 +450,9 @@ ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp
 
 <footer class="wrap">
   <p>
-    The parts behind the headline are not stock art. <a href="#sketch">sketch</a> solves their
-    profiles, <a href="#decad">decad</a> extrudes each one, sets it down on what is under it and
-    proves that nothing interpenetrates, and <a href="#solidlens">solidlens</a> rasterizes the
-    scene. The generator is <code>tools/hero</code> in this repository.
+    The header animation uses <a href="https://github.com/lestrrat-go/kavad">Kavad</a>
+    to draw a moving wireframe plate, ring, and pins. Its source is
+    <code>tools/promo</code> in this repository.
   </p>
   <p>
     The source for this page lives in

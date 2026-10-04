@@ -93,8 +93,7 @@ img { max-width: 100%; height: auto; display: block; }
 .hero .wrap { position: relative; }
 .hero .wrap > :not(.hero-promo) { position: relative; z-index: 2; }
 
-/* The part behind the headline. It is a solidlens render of a body decad
-   built from sketch profiles; tools/hero regenerates it. */
+/* Kavad draws the header wireframe. The poster also serves reduced motion. */
 .hero .wrap::after, .hero-promo {
   position: absolute;
   top: 50%;
@@ -112,7 +111,7 @@ img { max-width: 100%; height: auto; display: block; }
   display: none;
   z-index: 0;
   aspect-ratio: 1300 / 950;
-  background: url("hero.png") no-repeat center center / contain;
+  background: url("hero-poster.png") no-repeat center center / contain;
 }
 
 .hero-promo {
