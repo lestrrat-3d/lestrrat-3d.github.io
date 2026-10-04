@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>CAD morphing rows render source</title>
+<style>
+  html, body { margin: 0; background: #0b1020; }
+  canvas { display: block; }
+</style>
+<canvas width="1080" height="630"></canvas>
+<script>
+const canvas = document.querySelector('canvas');
+const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
+if (!gl) throw new Error('WebGL2 is required to render the promo');
+
+const vertexSource = `#version 300 es
+in vec2 position;
+void main() { gl_Position = vec4(position, 0., 1.); }`;
+
+const fragmentSource = `#version 300 es
+precision highp float;
+uniform vec2 resolution;
+uniform float time;
+out vec4 color;
+
+const float PI = 3.14159265359;
+
+float phase(float t, float a, float b) {
+  float v = clamp((t - a) / (b - a), 0., 1.);
+  return v * v * (3. - 2. * v);
+}
+
+float phaseOffset(int row, int slot) {
+  if (row == 0) {
+    if (slot == 0) return 0.;
+    if (slot == 1) return 8.9;
+    if (slot == 2) return 4.1;
+    return 6.;
+  }
+  if (row == 1) {
+    if (slot == 0) return 7.5;
+    if (slot == 1) return 2.9;
+    if (slot == 2) return 10.;
+    return 1.4;
+  }
+  if (slot == 0) return 3.5;
+  if (slot == 1) return 5.7;
+  if (slot == 2) return 8.5;
+  return 11.;
+}
+
+vec3 turn(vec3 p, float angle) {
+  float c = cos(angle), s = sin(angle);
+  p.xy = mat2(c, -s, s, c) * p.xy;
+  return p;
+}
+
+float boxDistance(vec3 p, vec3 b) {
+  vec3 q = abs(p) - b;
+  return length(max(q, 0.)) + min(max(q.x, max(q.y, q.z)), 0.);
+}
+
+float chamferedBox(vec3 p, vec3 b, float r) {
+  vec3 q = abs(p);
+  float d = boxDistance(p, b);
+  d = max(d, (q.x + q.y - b.x - b.y + r) * .70710678);
+  d = max(d, (q.x + q.z - b.x - b.z + r) * .70710678);
+  d = max(d, (q.y + q.z - b.y - b.z + r) * .70710678);
+  return d;
+}
+
+float roundedBox(vec3 p, vec3 b, float r) {
+  return boxDistance(p, b - vec3(r)) - r;
+}
+
+float shape(vec3 p, float morphTime, float spin) {
+  p = turn(p, spin);
+  vec3 size = mix(vec3(.72), vec3(.95, .64, .75), phase(morphTime, .5, 1.9));
+  float d = chamferedBox(p, size, .22 * phase(morphTime, 2.2, 3.3));
+  d = mix(d, roundedBox(p, size, .36), phase(morphTime, 3.5, 4.7));
+  d = mix(d, length(p) - .87, phase(morphTime, 4.8, 6.2));
+  d = max(d, .33 * phase(morphTime, 6.4, 7.8) - length(p.xy));
+  float torus = length(vec2(length(p.xy) - .55, p.z)) - .36;
+  d = mix(d, torus, phase(morphTime, 8., 9.4));
+  return mix(d, boxDistance(p, vec3(.72)), phase(morphTime, 10., 11.7));
+}
+
+vec3 normalAt(vec3 p, float morphTime, float spin) {
+  const vec2 e = vec2(.001, 0.);
+  return normalize(vec3(
+    shape(p + e.xyy, morphTime, spin) - shape(p - e.xyy, morphTime, spin),
+    shape(p + e.yxy, morphTime, spin) - shape(p - e.yxy, morphTime, spin),
+    shape(p + e.yyx, morphTime, spin) - shape(p - e.yyx, morphTime, spin)));
+}
+
+float shadow(vec3 p, vec3 light, float morphTime, float spin) {
+  float t = .02, shade = 1.;
+  for (int i = 0; i < 26; i++) {
+    float h = shape(p + light * t, morphTime, spin);
+    shade = min(shade, 14. * h / t);
+    t += clamp(h, .025, .15);
+    if (h < .001 || t > 4.) break;
+  }
+  return clamp(shade, .2, 1.);
+}
+
+vec3 material(int row, int slot, vec3 local) {
+  int hue = row * 4 + slot;
+  vec3 base;
+  if (hue == 0) base = vec3(.02, .68, .88);
+  else if (hue == 1) base = vec3(.49, .24, .82);
+  else if (hue == 2) base = vec3(.91, .27, .24);
+  else if (hue == 3) base = vec3(.60, .78, .10);
+  else if (hue == 4) base = vec3(.75, .20, .56);
+  else if (hue == 5) base = vec3(.96, .52, .07);
+  else if (hue == 6) base = vec3(.04, .65, .38);
+  else if (hue == 7) base = vec3(.18, .36, .86);
+  else if (hue == 8) base = vec3(.80, .64, .09);
+  else if (hue == 9) base = vec3(.88, .25, .42);
+  else if (hue == 10) base = vec3(.04, .54, .62);
+  else base = vec3(.58, .30, .86);
+  float blend = clamp(.45 + local.z * .22 + local.x * .20, 0., 1.);
+  return mix(base, mix(base, vec3(1.), .28), blend);
+}
+
+void main() {
+  float rowHeight = resolution.y / 3.;
+  float cell = resolution.x * .25;
+  int row = int(floor(gl_FragCoord.y / rowHeight));
+  float scroll = (row % 2 == 0 ? 1. : -1.) * resolution.x * time / 24.;
+  float along = gl_FragCoord.x - scroll;
+  int column = int(floor(along / cell));
+  int slot = ((column % 4) + 4) % 4;
+  vec2 localPixel = vec2(along - float(column) * cell - cell * .5,
+    gl_FragCoord.y - float(row) * rowHeight - rowHeight * .5);
+  vec2 uv = localPixel / rowHeight;
+  float morphTime = mod(time + phaseOffset(row, slot), 12.);
+  float direction = (slot + row) % 2 == 0 ? 1. : -1.;
+  float spin = direction * 2. * PI * time / 24. + float(slot) * .25 + float(row) * .17;
+
+  vec3 eye = vec3(2.6, -3.7, 2.4);
+  vec3 forward = normalize(-eye);
+  vec3 right = normalize(cross(forward, vec3(0., 0., 1.)));
+  vec3 up = cross(right, forward);
+  vec3 ray = normalize(forward * 1.95 + uv.x * right + uv.y * up);
+  vec3 bg = mix(vec3(.035, .055, .11), vec3(.075, .11, .19),
+    clamp(gl_FragCoord.y / resolution.y, 0., 1.));
+
+  float distance = 0.;
+  for (int i = 0; i < 100; i++) {
+    vec3 p = eye + ray * distance;
+    float d = shape(p, morphTime, spin);
+    if (d < .0015) {
+      vec3 n = normalAt(p, morphTime, spin);
+      vec3 light = normalize(vec3(-.65, -.35, 1.));
+      float diffuse = max(dot(n, light), 0.);
+      float rim = pow(1. - max(dot(n, -ray), 0.), 2.4);
+      float spec = pow(max(dot(reflect(-light, n), -ray), 0.), 35.);
+      vec3 tint = material(row, slot, turn(p, spin));
+      bg = tint * (.26 + diffuse * .73 * shadow(p + n * .008, light, morphTime, spin));
+      bg += tint * rim * .52 + vec3(1.) * spec * .38;
+      break;
+    }
+    distance += max(d, .003);
+    if (distance > 9.) break;
+  }
+  color = vec4(pow(bg, vec3(1. / 2.2)), 1.);
+}`;
+
+function compile(type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    throw new Error(gl.getShaderInfoLog(shader));
+  }
+  return shader;
+}
+
+const program = gl.createProgram();
+gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexSource));
+gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragmentSource));
+gl.linkProgram(program);
+if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+  throw new Error(gl.getProgramInfoLog(program));
+}
+gl.useProgram(program);
+const buffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+const position = gl.getAttribLocation(program, 'position');
+gl.enableVertexAttribArray(position);
+gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+const resolution = gl.getUniformLocation(program, 'resolution');
+const clock = gl.getUniformLocation(program, 'time');
+
+window.renderAt = seconds => {
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.uniform2f(resolution, canvas.width, canvas.height);
+  gl.uniform1f(clock, seconds);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.finish();
+};
+window.renderAt(0);
+</script>
+</html>

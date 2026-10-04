@@ -12,17 +12,35 @@
 
 <header class="hero">
   <div class="wrap">
-    <p class="eyebrow">github.com/lestrrat-3d</p>
-    <h1>A Go toolchain for CAD,<br>from typed units up to rendered pixels.</h1>
-    <p class="lede">
-      Six libraries that stack into a headless CAD pipeline, plus the tools
-      built on top of it. Models start in code, with no required CAD GUI or
-      project file and no hidden ambient units.
-    </p>
-    <p class="cta">
-      <a class="btn" href="https://github.com/orgs/lestrrat-3d/repositories">All repositories</a>
-      <a class="btn btn-ghost" href="#stack">The stack</a>
-    </p>
+    <div class="hero-copy">
+      <p class="eyebrow">github.com/lestrrat-3d</p>
+      <h1>A Go toolchain for CAD,<br>from typed units up to rendered pixels.</h1>
+      <p class="lede">
+        Six libraries that stack into a headless CAD pipeline, plus the tools
+        built on top of it. Models start in code, with no required CAD GUI or
+        project file and no hidden ambient units.
+      </p>
+      <p class="cta">
+        <a class="btn" href="https://github.com/orgs/lestrrat-3d/repositories">All repositories</a>
+        <a class="btn btn-ghost" href="#stack">The stack</a>
+      </p>
+    </div>
+    <figure class="hero-showcase">
+      <div class="hero-media">
+        <img src="hero-poster.png" alt="" width="1080" height="630">
+        <video class="hero-promo" autoplay muted loop playsinline controls preload="metadata"
+               poster="hero-poster.png"
+               aria-label="Three rows of colorful 3D shapes drift in alternating directions; each shape turns and morphs from a cube through rounded and hollow forms to a torus">
+          <source src="hero-promo.webm" type="video/webm">
+          <source src="hero-promo.mp4" type="video/mp4">
+        </video>
+        <button class="hero-toggle" type="button" hidden>Pause animation</button>
+      </div>
+      <figcaption>
+        <strong>One shape sequence, twelve starting points.</strong>
+        <span>Resize · chamfer · fillet · sphere · bore · torus</span>
+      </figcaption>
+    </figure>
   </div>
 </header>
 
@@ -470,16 +488,41 @@ ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp
 
 <footer class="wrap">
   <p>
-    The parts behind the headline are not stock art. <a href="#sketch">sketch</a> solves their
-    profiles, <a href="#decad">decad</a> extrudes each one, sets it down on what is under it and
-    proves that nothing interpenetrates, and <a href="#solidlens">solidlens</a> rasterizes the
-    scene. The generator is <code>tools/hero</code> in this repository.
+    The header's morphing shape studies are rendered from
+    <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io/tree/main/tools/promo">source in this repository</a>.
+    They illustrate shape changes; the library examples below show actual tool output.
   </p>
   <p>
     The source for this page lives in
     <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io">lestrrat-3d.github.io</a>.
   </p>
 </footer>
+
+<script>
+const heroVideo = document.querySelector('.hero-promo');
+const heroToggle = document.querySelector('.hero-toggle');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const syncHeroToggle = () => {
+  heroToggle.textContent = heroVideo.paused ? 'Play animation' : 'Pause animation';
+};
+heroVideo.addEventListener('play', syncHeroToggle);
+heroVideo.addEventListener('pause', syncHeroToggle);
+heroToggle.addEventListener('click', () => {
+  if (heroVideo.paused) {
+    heroVideo.play().catch(syncHeroToggle);
+    syncHeroToggle();
+  } else {
+    heroVideo.pause();
+  }
+});
+if (reducedMotion.matches) {
+  heroVideo.pause();
+} else {
+  heroVideo.controls = false;
+  heroToggle.hidden = false;
+  syncHeroToggle();
+}
+</script>
 
 </body>
 </html>
