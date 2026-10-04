@@ -1,11 +1,12 @@
 # Header promo
 
-`morph.html` renders three 3D shape studies side by side. A block changes size,
-gains chamfered and rounded edges, becomes a sphere, develops a hole, and becomes
-a torus. A cylinder becomes a tapered, rounded vessel with a bore. A hexagonal
-prism becomes a gear and then a ring. All three turn 180 degrees over the
-12-second loop. Their starting shapes have half-turn symmetry, so the loop
-returns to its first frame without a visible orientation jump.
+`morph.html` renders eight copies of one 3D shape sequence across two rows.
+Each cube changes size, gains chamfered and rounded edges, becomes a sphere,
+develops a hole, and becomes a torus. The copies start at different times in
+the sequence, so several shapes appear at once. They turn slowly while the
+upper row moves left and the lower row moves right. Each row advances by its
+full four-shape pattern over the 24-second loop. The shape sequence repeats
+twice and the turn completes one revolution, so the last frame joins the first.
 
 The models are signed-distance shapes rendered with WebGL2. They illustrate
 the geometry changes named in the caption; they are not output from Decad.
@@ -20,10 +21,10 @@ Playwright with Chromium, and ffmpeg. It writes intermediate frames to `.tmp/`.
 ```sh
 npm install --prefix .tmp/promo-node --no-save playwright@1.56.1
 .tmp/promo-node/node_modules/.bin/playwright install chromium
-NODE_PATH="$PWD/.tmp/promo-node/node_modules" node tools/promo/capture.cjs .tmp/promo-frames 24 12
+NODE_PATH="$PWD/.tmp/promo-node/node_modules" node tools/promo/capture.cjs .tmp/promo-frames 24 24
 ffmpeg -y -framerate 24 -i .tmp/promo-frames/frame_%04d.png -c:v libx264 -crf 23 -pix_fmt yuv420p -movflags +faststart hero-promo.mp4
 ffmpeg -y -i hero-promo.mp4 -c:v libvpx-vp9 -b:v 0 -crf 32 -an hero-promo.webm
-ffmpeg -y -i .tmp/promo-frames/frame_0180.png -frames:v 1 hero-poster.png
+ffmpeg -y -i .tmp/promo-frames/frame_0000.png -frames:v 1 hero-poster.png
 ```
 
 The page serves WebM with MP4 fallback. The poster stays visible when a visitor

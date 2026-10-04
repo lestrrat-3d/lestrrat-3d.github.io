@@ -27,19 +27,18 @@
     </div>
     <figure class="hero-showcase">
       <div class="hero-media">
-        <img src="hero-poster.png" alt="" width="1080" height="420">
+        <img src="hero-poster.png" alt="" width="1080" height="540">
         <video class="hero-promo" autoplay muted loop playsinline controls preload="metadata"
                poster="hero-poster.png"
-               aria-label="Three slowly turning 3D models morph from a block, cylinder, and hexagonal prism into rounded, hollow shapes">
+               aria-label="Two rows of slowly turning 3D shapes drift in opposite directions, each morphing from a cube through rounded and hollow forms to a torus">
           <source src="hero-promo.webm" type="video/webm">
           <source src="hero-promo.mp4" type="video/mp4">
         </video>
         <button class="hero-toggle" type="button" hidden>Pause animation</button>
       </div>
       <figcaption>
-        <span><strong>Block → torus</strong><small>Resize · chamfer · fillet · cut</small></span>
-        <span><strong>Cylinder → tube</strong><small>Taper · round · bore</small></span>
-        <span><strong>Hex prism → gear</strong><small>Reshape · teeth · bore</small></span>
+        <strong>One shape sequence, eight starting points.</strong>
+        <span>Resize · chamfer · fillet · sphere · bore · torus</span>
       </figcaption>
     </figure>
   </div>
@@ -464,7 +463,7 @@ ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp
 
 <footer class="wrap">
   <p>
-    The header's three shape studies are rendered from
+    The header's morphing shape studies are rendered from
     <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io/tree/main/tools/promo">source in this repository</a>.
     They illustrate shape changes; the library examples below show actual tool output.
   </p>

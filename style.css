@@ -105,7 +105,7 @@ img { max-width: 100%; height: auto; display: block; }
 .hero-media img, .hero-promo {
   display: block;
   width: 100%;
-  aspect-ratio: 18 / 7;
+  aspect-ratio: 2 / 1;
   object-fit: cover;
 }
 
@@ -129,29 +129,23 @@ img { max-width: 100%; height: auto; display: block; }
 .hero-toggle[hidden] { display: none; }
 
 .hero-showcase figcaption {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0.7rem 1rem;
   border-top: 1px solid var(--rule);
   color: var(--fg-muted);
   font-family: var(--mono);
-  font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
   line-height: 1.4;
 }
 
-.hero-showcase figcaption span {
-  padding: 0.7rem clamp(0.5rem, 1.6vw, 1rem);
-  text-align: center;
-}
-
-.hero-showcase figcaption strong, .hero-showcase figcaption small { display: block; }
 .hero-showcase figcaption strong { color: var(--fg); font-weight: 600; }
-.hero-showcase figcaption small { margin-top: 0.15rem; font-size: 0.85em; }
-
-.hero-showcase figcaption span + span { border-left: 1px solid var(--rule); }
 
 @media (max-width: 600px) {
-  .hero-showcase figcaption span { padding: 0.55rem 0.25rem; }
-  .hero-showcase figcaption small { display: none; }
+  .hero-media img, .hero-promo { aspect-ratio: 1 / 1; }
+  .hero-showcase figcaption { padding: 0.6rem 0.75rem; }
   .hero-toggle { top: 0.4rem; right: 0.4rem; padding: 0.25rem 0.45rem; font-size: 0.65rem; }
 }
 

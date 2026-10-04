@@ -1,5 +1,5 @@
 // Render the WebGL morph study as numbered PNG frames with local Chromium.
-// Usage: node capture.cjs OUTPUT_DIR [FPS=24] [SECONDS=12]
+// Usage: node capture.cjs OUTPUT_DIR [FPS=24] [SECONDS=24]
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
@@ -7,9 +7,9 @@ const { chromium } = require('playwright');
 
 const outputDir = process.argv[2];
 const fps = Number(process.argv[3] || 24);
-const seconds = Number(process.argv[4] || 12);
+const seconds = Number(process.argv[4] || 24);
 if (!outputDir || !Number.isInteger(fps) || !Number.isInteger(seconds) || fps < 1 || seconds < 1) {
-  throw new Error('usage: node capture.cjs OUTPUT_DIR [FPS=24] [SECONDS=12]');
+  throw new Error('usage: node capture.cjs OUTPUT_DIR [FPS=24] [SECONDS=24]');
 }
 
 (async () => {
@@ -19,7 +19,7 @@ if (!outputDir || !Number.isInteger(fps) || !Number.isInteger(seconds) || fps < 
     args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
   });
   try {
-    const page = await browser.newPage({ viewport: { width: 1080, height: 420 } });
+    const page = await browser.newPage({ viewport: { width: 1080, height: 540 } });
     page.on('pageerror', error => console.error(error));
     await page.goto(pathToFileURL(path.join(__dirname, 'morph.html')).href);
     for (let frame = 0; frame < fps * seconds; frame++) {

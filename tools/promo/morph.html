@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
-<title>CAD shape morph render source</title>
+<title>CAD morphing rows render source</title>
 <style>
   html, body { margin: 0; background: #0b1020; }
   canvas { display: block; }
 </style>
-<canvas width="1080" height="420"></canvas>
+<canvas width="1080" height="540"></canvas>
 <script>
 const canvas = document.querySelector('canvas');
 const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
@@ -24,26 +24,38 @@ out vec4 color;
 
 const float PI = 3.14159265359;
 
-float phase(float a, float b) {
-  float t = clamp((time - a) / (b - a), 0., 1.);
-  return t * t * (3. - 2. * t);
+float phase(float t, float a, float b) {
+  float v = clamp((t - a) / (b - a), 0., 1.);
+  return v * v * (3. - 2. * v);
 }
 
-vec3 turn(vec3 p) {
-  float a = PI * time / 12.;
-  float c = cos(a), s = sin(a);
+float phaseOffset(int row, int slot) {
+  if (row == 0) {
+    if (slot == 0) return 0.;
+    if (slot == 1) return 8.9;
+    if (slot == 2) return 4.1;
+    return 6.;
+  }
+  if (slot == 0) return 7.5;
+  if (slot == 1) return 2.9;
+  if (slot == 2) return 10.;
+  return 1.4;
+}
+
+vec3 turn(vec3 p, float angle) {
+  float c = cos(angle), s = sin(angle);
   p.xy = mat2(c, -s, s, c) * p.xy;
   return p;
 }
 
-float box(vec3 p, vec3 b) {
+float boxDistance(vec3 p, vec3 b) {
   vec3 q = abs(p) - b;
   return length(max(q, 0.)) + min(max(q.x, max(q.y, q.z)), 0.);
 }
 
 float chamferedBox(vec3 p, vec3 b, float r) {
   vec3 q = abs(p);
-  float d = box(p, b);
+  float d = boxDistance(p, b);
   d = max(d, (q.x + q.y - b.x - b.y + r) * .70710678);
   d = max(d, (q.x + q.z - b.x - b.z + r) * .70710678);
   d = max(d, (q.y + q.z - b.y - b.z + r) * .70710678);
@@ -51,123 +63,96 @@ float chamferedBox(vec3 p, vec3 b, float r) {
 }
 
 float roundedBox(vec3 p, vec3 b, float r) {
-  return box(p, b - vec3(r)) - r;
+  return boxDistance(p, b - vec3(r)) - r;
 }
 
-float cylinder(vec3 p, float r, float h) {
-  return max(length(p.xy) - r, abs(p.z) - h);
-}
-
-float hexagon(vec2 p, float r) {
-  const vec3 k = vec3(-.8660254, .5, .5773503);
-  p = abs(p);
-  p -= 2. * min(dot(k.xy, p), 0.) * k.xy;
-  p -= vec2(clamp(p.x, -k.z * r, k.z * r), r);
-  return length(p) * sign(p.y);
-}
-
-float blockMorph(vec3 p) {
-  vec3 size = mix(vec3(.72), vec3(.94, .64, .75), phase(.4, 1.8));
-  float d = chamferedBox(p, size, .22 * phase(2., 3.2));
-  d = mix(d, roundedBox(p, size, .36), phase(3.4, 4.6));
-  d = mix(d, length(p) - .87, phase(4.8, 6.1));
-  d = max(d, .33 * phase(6.3, 7.7) - length(p.xy));
+float shape(vec3 p, float morphTime, float spin) {
+  p = turn(p, spin);
+  vec3 size = mix(vec3(.72), vec3(.95, .64, .75), phase(morphTime, .5, 1.9));
+  float d = chamferedBox(p, size, .22 * phase(morphTime, 2.2, 3.3));
+  d = mix(d, roundedBox(p, size, .36), phase(morphTime, 3.5, 4.7));
+  d = mix(d, length(p) - .87, phase(morphTime, 4.8, 6.2));
+  d = max(d, .33 * phase(morphTime, 6.4, 7.8) - length(p.xy));
   float torus = length(vec2(length(p.xy) - .55, p.z)) - .36;
-  d = mix(d, torus, phase(8., 9.3));
-  return mix(d, box(p, vec3(.72)), phase(10., 11.7));
+  d = mix(d, torus, phase(morphTime, 8., 9.4));
+  return mix(d, boxDistance(p, vec3(.72)), phase(morphTime, 10., 11.7));
 }
 
-float vesselMorph(vec3 p) {
-  float d = cylinder(p, .72, .72);
-  float taper = max(length(p.xy) - (.72 - .35 * p.z), abs(p.z) - .72);
-  d = mix(d, taper, phase(1., 2.7));
-  float waist = max(length(p.xy) - (.74 - .19 * exp(-7. * p.z * p.z)), abs(p.z) - .72);
-  d = mix(d, waist, phase(3., 4.5));
-  vec3 center = vec3(0., 0., clamp(p.z, -.48, .48));
-  float capsule = length(p - center) - .6;
-  d = mix(d, capsule, phase(4.8, 6.1));
-  d = max(d, .3 * phase(6.3, 7.7) - length(p.xy));
-  float pipe = max(cylinder(p, .73, .72), .32 - length(p.xy));
-  d = mix(d, pipe, phase(8., 9.4));
-  return mix(d, cylinder(p, .72, .72), phase(10., 11.7));
-}
-
-float wheelMorph(vec3 p) {
-  float prism = max(hexagon(p.xy, .78), abs(p.z) - .42);
-  float a = atan(p.y, p.x);
-  float gear = max(length(p.xy) - (.7 + .12 * cos(12. * a)), abs(p.z) - .35);
-  float d = mix(prism, gear, phase(1.8, 4.));
-  d = max(d, .29 * phase(4.4, 6.2) - length(p.xy));
-  float ring = max(cylinder(p, .83, .28), .32 - length(p.xy));
-  d = mix(d, ring, phase(7., 8.8));
-  return mix(d, prism, phase(10., 11.7));
-}
-
-float shape(vec3 p, int model) {
-  p = turn(p);
-  if (model == 0) return blockMorph(p);
-  if (model == 1) return vesselMorph(p);
-  return wheelMorph(p);
-}
-
-vec3 normalAt(vec3 p, int model) {
+vec3 normalAt(vec3 p, float morphTime, float spin) {
   const vec2 e = vec2(.001, 0.);
   return normalize(vec3(
-    shape(p + e.xyy, model) - shape(p - e.xyy, model),
-    shape(p + e.yxy, model) - shape(p - e.yxy, model),
-    shape(p + e.yyx, model) - shape(p - e.yyx, model)));
+    shape(p + e.xyy, morphTime, spin) - shape(p - e.xyy, morphTime, spin),
+    shape(p + e.yxy, morphTime, spin) - shape(p - e.yxy, morphTime, spin),
+    shape(p + e.yyx, morphTime, spin) - shape(p - e.yyx, morphTime, spin)));
 }
 
-float shadow(vec3 p, vec3 light, int model) {
+float shadow(vec3 p, vec3 light, float morphTime, float spin) {
   float t = .02, shade = 1.;
-  for (int i = 0; i < 24; i++) {
-    float h = shape(p + light * t, model);
+  for (int i = 0; i < 26; i++) {
+    float h = shape(p + light * t, morphTime, spin);
     shade = min(shade, 14. * h / t);
-    t += clamp(h, .025, .16);
+    t += clamp(h, .025, .15);
     if (h < .001 || t > 4.) break;
   }
-  return clamp(shade, .25, 1.);
+  return clamp(shade, .2, 1.);
+}
+
+vec3 material(int row, int slot, vec3 local) {
+  int hue = (slot + row * 2) % 4;
+  vec3 low, high;
+  if (hue == 0) {
+    low = vec3(.14, .62, .84); high = vec3(.75, .45, .95);
+  } else if (hue == 1) {
+    low = vec3(.58, .43, .89); high = vec3(.95, .68, .91);
+  } else if (hue == 2) {
+    low = vec3(.92, .39, .39); high = vec3(1., .72, .50);
+  } else {
+    low = vec3(.17, .72, .61); high = vec3(.62, .85, .96);
+  }
+  float blend = clamp(.5 + local.z * .30 + local.x * .20, 0., 1.);
+  return mix(low, high, blend);
 }
 
 void main() {
-  float cell = resolution.x / 3.;
-  int model = int(floor(gl_FragCoord.x / cell));
-  float x = mod(gl_FragCoord.x, cell);
-  vec2 uv = (vec2(x - cell * .5, gl_FragCoord.y - resolution.y * .5)) / resolution.y;
+  float rowHeight = resolution.y * .5;
+  float cell = resolution.x * .25;
+  int row = int(floor(gl_FragCoord.y / rowHeight));
+  float scroll = (row == 0 ? 1. : -1.) * resolution.x * time / 24.;
+  float along = gl_FragCoord.x - scroll;
+  int column = int(floor(along / cell));
+  int slot = ((column % 4) + 4) % 4;
+  vec2 localPixel = vec2(along - float(column) * cell - cell * .5,
+    gl_FragCoord.y - float(row) * rowHeight - rowHeight * .5);
+  vec2 uv = localPixel / rowHeight;
+  float morphTime = mod(time + phaseOffset(row, slot), 12.);
+  float spin = 2. * PI * time / 24. + float(slot) * .25 + float(row) * .17;
+
   vec3 eye = vec3(2.6, -3.7, 2.4);
   vec3 forward = normalize(-eye);
   vec3 right = normalize(cross(forward, vec3(0., 0., 1.)));
   vec3 up = cross(right, forward);
-  vec3 ray = normalize(forward * 1.55 + uv.x * right + uv.y * up);
-  vec3 palette = model == 0 ? vec3(.08, .70, .84) :
-    model == 1 ? vec3(.94, .32, .31) : vec3(.88, .58, .16);
-  vec3 bg = mix(vec3(.035, .055, .11), vec3(.074, .11, .19), clamp(uv.y + .5, 0., 1.));
-  bg += palette * .025 * exp(-5. * dot(uv, uv));
+  vec3 ray = normalize(forward * 1.72 + uv.x * right + uv.y * up);
+  vec3 bg = mix(vec3(.035, .055, .11), vec3(.075, .11, .19),
+    clamp(gl_FragCoord.y / resolution.y, 0., 1.));
+
   float distance = 0.;
   for (int i = 0; i < 100; i++) {
     vec3 p = eye + ray * distance;
-    float d = shape(p, model);
+    float d = shape(p, morphTime, spin);
     if (d < .0015) {
-      vec3 n = normalAt(p, model);
+      vec3 n = normalAt(p, morphTime, spin);
       vec3 light = normalize(vec3(-.65, -.35, 1.));
       float diffuse = max(dot(n, light), 0.);
       float rim = pow(1. - max(dot(n, -ray), 0.), 2.4);
-      float spec = pow(max(dot(reflect(-light, n), -ray), 0.), 34.);
-      vec3 local = turn(p);
-      float angle = atan(local.y, local.x);
-      float band = .93 + .07 * cos(4. * angle);
-      float seam = 1. - smoothstep(.02, .07, abs(sin(angle)));
-      seam *= 1. - smoothstep(.45, .85, abs(n.z));
-      bg = palette * band * (.27 + diffuse * .74 * shadow(p + n * .008, light, model));
-      bg *= 1. - .2 * seam;
-      bg += palette * rim * .38 + vec3(1.) * spec * .32;
+      float spec = pow(max(dot(reflect(-light, n), -ray), 0.), 35.);
+      vec3 tint = material(row, slot, turn(p, spin));
+      bg = tint * (.26 + diffuse * .73 * shadow(p + n * .008, light, morphTime, spin));
+      bg += tint * rim * .52 + vec3(1.) * spec * .38;
       break;
     }
-    distance += max(d * .48, .002);
+    distance += max(d, .003);
     if (distance > 9.) break;
   }
-  float divider = 1. - smoothstep(0., .005, min(x / cell, 1. - x / cell));
-  bg = mix(bg, vec3(.16, .21, .32), divider * .42);
   color = vec4(pow(bg, vec3(1. / 2.2)), 1.);
 }`;
 
