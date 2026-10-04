@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>lestrrat-3d — a Go toolchain for CAD</title>
-<meta name="description" content="Go tools for CAD: typed units, coordinate math, parametric sketches, solid modeling, mesh rendering, and animation.">
+<meta name="description" content="Go tools for repeatable CAD models: typed units, coordinate math, dimensioned sketches, 3D modeling, geometry checks, rendering, and animation.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%230b1020'/><path d='M8 2.5 13 5.4v5.2L8 13.5 3 10.6V5.4z' fill='none' stroke='%235ad1e6' stroke-width='1.2'/><path d='M3 5.4 8 8.3l5-2.9M8 8.3v5.2' fill='none' stroke='%235ad1e6' stroke-width='1.2'/></svg>">
 </head>
@@ -31,18 +31,31 @@
 <section class="wrap section" id="purpose">
   <div class="purpose-layout">
     <div class="purpose-copy">
-      <h2>How we use these tools</h2>
+      <h2>Why build CAD from code?</h2>
       <p class="section-lede">
-        An AI agent can write a CAD add-in, but it needs to run the modeling steps to
-        see whether they create the intended part. It can define dimensioned sketches
-        and ordered 3D features in code, then rerun the construction after a change.
-        These libraries let it check the geometry and inspect a render before carrying
-        the steps into Fusion, FreeCAD, Onshape, or another CAD application.
+        Before coding agents, a designer made a parametric part in a CAD app by
+        drawing dimensioned sketches and adding extrusions and cuts. The app
+        rebuilt the part when a dimension changed. That workflow still works.
+      </p>
+      <p class="section-lede">
+        Agents can make convincing 3D shapes for a one-off render or print. A
+        bevel gear can look right yet fail to mesh at the requested dimensions,
+        and another prompt may produce different geometry. An agent can also
+        write an add-in that reruns fixed modeling steps. It still has to run
+        the add-in in the CAD app to inspect the resulting body.
+      </p>
+      <p class="section-lede">
+        With <a href="#sketch">sketch</a> and <a href="#decad">decad</a>, the
+        agent writes dimensioned sketches and ordered features in Go, builds 3D
+        bodies, and checks their measurements and fit as it revises the code.
+        The same code and inputs rebuild the same model. The agent uses those
+        steps in a CAD app to build an editable, parametric part, then checks
+        the app's result.
       </p>
     </div>
 
     <figure class="workflow-diagram">
-      <figcaption>Check the model before using its steps in a CAD app</figcaption>
+      <figcaption>Agentic CAD: build a model you can rerun</figcaption>
       <div class="workflow-goal">CAD goal</div>
       <div class="workflow-down" aria-hidden="true">↓</div>
       <div class="workflow-loop">
@@ -60,7 +73,7 @@
           <span class="workflow-right" aria-hidden="true">→</span>
           <div class="workflow-node workflow-run">
             <span class="workflow-node-kicker">sketch + decad</span>
-            <strong>Run the construction</strong>
+            <strong>Build a 3D body</strong>
           </div>
         </div>
         <div class="workflow-down workflow-down-run" aria-hidden="true">↓</div>
@@ -79,7 +92,7 @@
       </div>
       <div class="workflow-pass"><span>Passes</span><span aria-hidden="true">↓</span></div>
       <div class="workflow-output">
-        <strong>Carry the checked steps into a CAD app</strong>
+        <strong>Keep the code; use its steps in a CAD app</strong>
         <span class="workflow-targets"><span>Fusion</span><span>FreeCAD</span><span>Onshape</span></span>
       </div>
     </figure>
@@ -235,16 +248,17 @@ width.Set(35)                               // re-solve and the geometry follows
       <h3><a href="https://github.com/lestrrat-3d/decad">decad</a> <span class="badge">work in progress</span></h3>
       <p class="tagline">Deconstructed CAD: a headless CAD engine for Go.</p>
       <p>
-        The 3D modeling layer above <a href="#sketch">sketch</a> and <a href="#r3">r3</a>.
-        Dimensioned sketch profiles and ordered features define a part in code. Rerunning
-        those steps with the same inputs rebuilds the same model. A coding agent can
-        read decad's verification report before carrying the construction into a CAD add-in.
+        decad builds 3D bodies in Go from dimensioned profiles solved by
+        <a href="#sketch">sketch</a> and ordered modeling features. An agent can
+        measure volume and centroid, tessellate the bodies, change a dimension
+        or feature, and run the construction again. The same code and inputs
+        rebuild the same model.
       </p>
       <p>
-        It exists so that a part can be proven before anyone commits to building it in
-        real CAD software: is the body watertight, does it self-intersect, what is its
-        volume and centroid, do these two bodies collide, is any wall thinner than the
-        end mill that has to cut it. Being wrong here is cheap.
+        Its verification report can check body validity, interference, and requested
+        clearance or wall-thickness limits. After the model passes the requested
+        checks, the agent can translate those operations into a CAD add-in that
+        builds an editable, parametric part. The agent checks the CAD app's result too.
       </p>
       <p>
         The public API is landing incrementally against an approved design, so what the
