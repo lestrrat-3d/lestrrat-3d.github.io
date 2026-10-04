@@ -12,22 +12,36 @@
 
 <header class="hero">
   <div class="wrap">
-    <video class="hero-promo" autoplay muted loop playsinline preload="metadata"
-           poster="hero-poster.png" aria-hidden="true" tabindex="-1">
-      <source src="hero-promo.webm" type="video/webm">
-      <source src="hero-promo.mp4" type="video/mp4">
-    </video>
-    <p class="eyebrow">github.com/lestrrat-3d</p>
-    <h1>A Go toolchain for CAD,<br>from typed units up to rendered pixels.</h1>
-    <p class="lede">
-      Six libraries that stack into a headless CAD pipeline, plus the tools
-      built on top of it. Everything here is driven from code — no GUI, no document
-      format, no hidden ambient units.
-    </p>
-    <p class="cta">
-      <a class="btn" href="https://github.com/orgs/lestrrat-3d/repositories">All repositories</a>
-      <a class="btn btn-ghost" href="#stack">The stack</a>
-    </p>
+    <div class="hero-copy">
+      <p class="eyebrow">github.com/lestrrat-3d</p>
+      <h1>A Go toolchain for CAD,<br>from typed units up to rendered pixels.</h1>
+      <p class="lede">
+        Six libraries that stack into a headless CAD pipeline, plus the tools
+        built on top of it. Everything here is driven from code — no GUI, no document
+        format, no hidden ambient units.
+      </p>
+      <p class="cta">
+        <a class="btn" href="https://github.com/orgs/lestrrat-3d/repositories">All repositories</a>
+        <a class="btn btn-ghost" href="#stack">The stack</a>
+      </p>
+    </div>
+    <figure class="hero-showcase">
+      <div class="hero-media">
+        <img src="hero-poster.png" alt="" width="1080" height="420">
+        <video class="hero-promo" autoplay muted loop playsinline controls preload="metadata"
+               poster="hero-poster.png"
+               aria-label="Three slowly turning 3D models morph from a block, cylinder, and hexagonal prism into rounded, hollow shapes">
+          <source src="hero-promo.webm" type="video/webm">
+          <source src="hero-promo.mp4" type="video/mp4">
+        </video>
+        <button class="hero-toggle" type="button" hidden>Pause animation</button>
+      </div>
+      <figcaption>
+        <span><strong>Block → torus</strong><small>Resize · chamfer · fillet · cut</small></span>
+        <span><strong>Cylinder → tube</strong><small>Taper · round · bore</small></span>
+        <span><strong>Hex prism → gear</strong><small>Reshape · teeth · bore</small></span>
+      </figcaption>
+    </figure>
   </div>
 </header>
 
@@ -450,15 +464,41 @@ ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp
 
 <footer class="wrap">
   <p>
-    The header animation uses <a href="https://github.com/lestrrat-go/kavad">Kavad</a>
-    to draw a moving wireframe plate, ring, and pins. Its source is
-    <code>tools/promo</code> in this repository.
+    The header's three shape studies are rendered from
+    <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io/tree/main/tools/promo">source in this repository</a>.
+    They illustrate shape changes; the library examples below show actual tool output.
   </p>
   <p>
     The source for this page lives in
     <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io">lestrrat-3d.github.io</a>.
   </p>
 </footer>
+
+<script>
+const heroVideo = document.querySelector('.hero-promo');
+const heroToggle = document.querySelector('.hero-toggle');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const syncHeroToggle = () => {
+  heroToggle.textContent = heroVideo.paused ? 'Play animation' : 'Pause animation';
+};
+heroVideo.addEventListener('play', syncHeroToggle);
+heroVideo.addEventListener('pause', syncHeroToggle);
+heroToggle.addEventListener('click', () => {
+  if (heroVideo.paused) {
+    heroVideo.play().catch(syncHeroToggle);
+    syncHeroToggle();
+  } else {
+    heroVideo.pause();
+  }
+});
+if (reducedMotion.matches) {
+  heroVideo.pause();
+} else {
+  heroVideo.controls = false;
+  heroToggle.hidden = false;
+  syncHeroToggle();
+}
+</script>
 
 </body>
 </html>
