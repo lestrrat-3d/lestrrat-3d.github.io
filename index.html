@@ -46,6 +46,24 @@
 
 <main>
 
+<section class="wrap hero-making" aria-labelledby="hero-making-title">
+  <h2 id="hero-making-title">How the hero was made</h2>
+  <div>
+    <p>
+      A WebGL2 shader uses distance formulas to draw a cube, chamfer and round its
+      edges, turn it into a sphere, open a hole, and finish as a torus. Twelve copies
+      start at different points in the sequence, turn in alternating directions,
+      and drift across three rows.
+    </p>
+    <p>
+      Playwright captures each frame; ffmpeg makes the WebM and MP4 videos and a still
+      poster for visitors who request reduced motion. The animation illustrates shape
+      changes; the library images below show actual tool output.
+      <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io/tree/main/tools/promo">View the shader and build steps</a>.
+    </p>
+  </div>
+</section>
+
 <section class="wrap section" id="purpose">
   <div class="purpose-layout">
     <div class="purpose-copy">
@@ -487,11 +505,6 @@ ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp
 </main>
 
 <footer class="wrap">
-  <p>
-    The header's morphing shape studies are rendered from
-    <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io/tree/main/tools/promo">source in this repository</a>.
-    They illustrate shape changes; the library examples below show actual tool output.
-  </p>
   <p>
     The source for this page lives in
     <a href="https://github.com/lestrrat-3d/lestrrat-3d.github.io">lestrrat-3d.github.io</a>.
