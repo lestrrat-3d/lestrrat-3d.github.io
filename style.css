@@ -91,28 +91,39 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .hero .wrap { position: relative; }
-.hero .wrap > * { position: relative; z-index: 1; }
+.hero .wrap > :not(.hero-promo) { position: relative; z-index: 2; }
 
 /* The part behind the headline. It is a solidlens render of a body decad
    built from sketch profiles; tools/hero regenerates it. */
-.hero .wrap::after {
-  content: "";
+.hero .wrap::after, .hero-promo {
   position: absolute;
-  z-index: 0;
   top: 50%;
   right: clamp(-8rem, -5vw, -1rem);
   translate: 0 -50%;
   width: min(57%, 690px);
-  aspect-ratio: 1300 / 950;
-  background: url("hero.png") no-repeat center center / contain;
   opacity: 0.85;
   -webkit-mask-image: linear-gradient(100deg, transparent 10%, #000 46%);
   mask-image: linear-gradient(100deg, transparent 10%, #000 46%);
   pointer-events: none;
 }
 
+.hero .wrap::after {
+  content: "";
+  display: none;
+  z-index: 0;
+  aspect-ratio: 1300 / 950;
+  background: url("hero.png") no-repeat center center / contain;
+}
+
+.hero-promo {
+  z-index: 1;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  mix-blend-mode: lighten;
+}
+
 @media (max-width: 900px) {
-  .hero .wrap::after {
+  .hero .wrap::after, .hero-promo {
     width: 112%;
     right: -26%;
     translate: 0 -56%;
@@ -554,4 +565,6 @@ footer p:last-child { margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; }
+  .hero-promo { display: none; }
+  .hero .wrap::after { display: block; }
 }
