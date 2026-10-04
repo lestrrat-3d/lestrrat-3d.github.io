@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>lestrrat-3d — a Go toolchain for CAD</title>
-<meta name="description" content="Go tools for repeatable CAD models: typed units, coordinate math, dimensioned sketches, 3D modeling, geometry checks, rendering, and animation.">
+<meta name="description" content="Go tools for repeatable CAD models: dimensioned sketches, 3D modeling, geometry checks, STL and OBJ export, rendering, and animation.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%230b1020'/><path d='M8 2.5 13 5.4v5.2L8 13.5 3 10.6V5.4z' fill='none' stroke='%235ad1e6' stroke-width='1.2'/><path d='M3 5.4 8 8.3l5-2.9M8 8.3v5.2' fill='none' stroke='%235ad1e6' stroke-width='1.2'/></svg>">
 </head>
@@ -16,8 +16,8 @@
     <h1>A Go toolchain for CAD,<br>from typed units up to rendered pixels.</h1>
     <p class="lede">
       Six libraries that stack into a headless CAD pipeline, plus the tools
-      built on top of it. Everything here is driven from code — no GUI, no document
-      format, no hidden ambient units.
+      built on top of it. Models start in code, with no required CAD GUI or
+      project file and no hidden ambient units.
     </p>
     <p class="cta">
       <a class="btn" href="https://github.com/orgs/lestrrat-3d/repositories">All repositories</a>
@@ -52,6 +52,13 @@
         steps in a CAD app to build an editable, parametric part, then checks
         the app's result.
       </p>
+      <p class="section-lede">
+        <a href="#decad">decad</a> writes a body as STL or OBJ when a mesh file
+        is needed. <a href="#solidlens">solidlens</a> renders its mesh directly
+        to a PNG for visual inspection. To show an assembly moving or a part
+        changing shape, <a href="#kinetograph">kinetograph</a> animates decad
+        bodies and uses solidlens to render numbered PNG frames.
+      </p>
     </div>
 
     <figure class="workflow-diagram">
@@ -83,7 +90,7 @@
           <div class="workflow-results">
             <span><b>✓</b> Sketch solved</span>
             <span><b>✓</b> 3D body verified</span>
-            <span class="workflow-result-review"><b>?</b> Render matches the goal?</span>
+            <span class="workflow-result-review"><b>?</b> solidlens render matches the goal?</span>
           </div>
         </div>
         <div class="workflow-return">
@@ -92,8 +99,10 @@
       </div>
       <div class="workflow-pass"><span>Passes</span><span aria-hidden="true">↓</span></div>
       <div class="workflow-output">
-        <strong>Keep the code; use its steps in a CAD app</strong>
-        <span class="workflow-targets"><span>Fusion</span><span>FreeCAD</span><span>Onshape</span></span>
+        <strong>Keep the code; use the model and its steps</strong>
+        <span class="workflow-targets">
+          <span>CAD app</span><span>STL / OBJ</span><span>solidlens PNG</span><span>kinetograph frames</span>
+        </span>
       </div>
     </figure>
   </div>
@@ -274,6 +283,8 @@ width.Set(35)                               // re-solve and the geometry follows
           closing faces to produce an open sheet body.</li>
         <li><strong>Prove the result:</strong> inspect topology and physical quantities,
           then check interference and clearance between bodies.</li>
+        <li><strong>Export meshes:</strong> tessellate a body at a chosen tolerance and
+          write STL or OBJ through <code>decad/export</code>.</li>
       </ul>
       <pre><code>doc := decad.New()
 body, err := doc.Extrude(s, s.Profiles()[0],
@@ -347,7 +358,7 @@ fmt.Println(report.Status, report.Trustworthy())
           <figcaption><strong>Surface results</strong> leave a feature's swept walls as a sheet body.</figcaption>
         </figure>
       </div>
-      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">depends on sketch, r3, units</span></p>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">writes STL, OBJ</span><span class="chip">depends on sketch, r3, units</span></p>
     </div>
   </article>
 
