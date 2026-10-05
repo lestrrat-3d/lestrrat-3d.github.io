@@ -281,9 +281,13 @@ width.Set(35)                               // re-solve and the geometry follows
 
   <article class="card card-wide" id="decad">
     <figure class="card-figure" style="--plate:#eaeff7">
-      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/hero.png"
-           alt="Dimensional DECAD lettering rendered from decad solids against a pale blue-gray background"
-           loading="lazy" width="900" height="300">
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)"
+                srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/hero.png">
+        <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/hero.gif"
+             alt="DECAD letters assemble on a navy plate, a light sweeps across them, and the letters lift away"
+             loading="lazy" width="900" height="506">
+      </picture>
     </figure>
     <div class="card-body">
       <h3><a href="https://github.com/lestrrat-3d/decad">decad</a> <span class="badge">work in progress</span></h3>
