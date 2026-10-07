@@ -338,53 +338,93 @@ fmt.Println(report.Status, report.Trustworthy())
 // Sound true</code></pre>
       <div class="gallery feature-gallery" role="group" aria-label="decad feature gallery">
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/extrude.png"
-               alt="An L-shaped angle bracket extruded from a 2D profile" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/extrude.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/extrude.gif"
+                 alt="An L-shaped profile rises into an angle bracket" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Extrude</strong> sweeps a solved profile straight into a solid.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/revolve.png"
-               alt="A flat ring made by revolving a circle offset from an axis" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/revolve.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/revolve.gif"
+                 alt="A circular profile turns around an axis into a ring" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Revolve</strong> spins a profile about an axis.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/sweep.png"
-               alt="A square duct following a 3D path through bends in two planes" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/sweep.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/sweep.gif"
+                 alt="One square section rises, turns, extends, and turns again" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Sweep</strong> carries a profile along a tangent 3D path.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/loft.png"
-               alt="A duct narrowing from a large rectangle to a smaller offset rectangle" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/loft.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/loft.gif"
+                 alt="A transition duct grows between two offset rectangles" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Loft</strong> joins profiles on different planes.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/freeform.png"
-               alt="An extruded blade section with a curved spline wall" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/freeform.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/freeform.gif"
+                 alt="Two curved spline edges form a leaf-shaped section before it rises into a solid" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Free-form profiles</strong> preserve and measure exact spline walls.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/fillet.png"
-               alt="A rectangular plate with four rounded upright edges" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/fillet.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/fillet.gif"
+                 alt="A plate's four upright edges gradually round over" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Fillet</strong> rounds selected edges into tangent arcs.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/chamfer.png"
-               alt="A rectangular plate with four upright edges cut back to flat bevels" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/chamfer.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/chamfer.gif"
+                 alt="A plate's four upright edges become flat bevels" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Chamfer</strong> cuts selected edges back to a straight bevel.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/cap-chamfer.png"
-               alt="A rectangular plate with its entire top rim bevelled" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/cap-chamfer.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/cap-chamfer.gif"
+                 alt="A plate's top rim gains a bevel" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Cap-loop chamfer</strong> bevels a whole rim in one operation.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/shell.png"
-               alt="An open tray with walls left at a uniform thickness" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/shell.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/shell.gif"
+                 alt="A shallow cavity widens into an open tray" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Shell</strong> hollows a solid to one wall thickness.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/boolean.png"
-               alt="A flange plate with a central bore and two smaller bolt holes" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/boolean.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/boolean.gif"
+                 alt="Three fixed cylinders cut a central bore and two bolt holes into a box" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Union, Cut and Intersect</strong> combine bodies explicitly.</figcaption>
         </figure>
         <figure class="feature">
@@ -393,8 +433,12 @@ fmt.Println(report.Status, report.Trustworthy())
           <figcaption><strong>Verify</strong> checks fits and proves clearance between bodies.</figcaption>
         </figure>
         <figure class="feature">
-          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/surface.png"
-               alt="A curved open dish with no thickness and its inner and outer sides shaded differently" loading="lazy" width="1280" height="960">
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)"
+                    srcset="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/surface.png">
+            <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/surface.gif"
+                 alt="A curved open dish grows as its profile revolves" loading="lazy" width="480" height="360">
+          </picture>
           <figcaption><strong>Surface results</strong> leave a feature's swept walls as a sheet body.</figcaption>
         </figure>
       </div>
