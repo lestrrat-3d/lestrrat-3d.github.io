@@ -319,6 +319,10 @@ width.Set(35)                               // re-solve and the geometry follows
           closing faces to produce an open sheet body.</li>
         <li><strong>Prove the result:</strong> inspect topology and physical quantities,
           then check interference and clearance between bodies.</li>
+        <li><strong>Check moving parts:</strong> drive bodies along a revolute, prismatic or
+          linked joint path, including closed loops such as a four-bar, and get each interval
+          of the motion reported as clear, colliding or undecided. The <code>dynamics</code>
+          package simulates rigid bodies under gravity, impact and friction.</li>
         <li><strong>Export meshes:</strong> tessellate a body at a chosen tolerance and
           write STL or OBJ through <code>decad/export</code>.</li>
       </ul>
@@ -392,6 +396,35 @@ fmt.Println(report.Status, report.Trustworthy())
           <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/features/surface.png"
                alt="A curved open dish with no thickness and its inner and outer sides shaded differently" loading="lazy" width="1280" height="960">
           <figcaption><strong>Surface results</strong> leave a feature's swept walls as a sheet body.</figcaption>
+        </figure>
+      </div>
+      <div class="gallery feature-gallery" role="group" aria-label="decad motion and collision gallery">
+        <figure class="feature">
+          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/motion/arm.gif"
+               alt="A two-link arm pinned to a post on a base plate folds up to a stop block, the forearm and the block flash coral, and the arm folds back"
+               loading="lazy" width="480" height="270">
+          <figcaption><strong>Folding arm</strong> moves to the last pose the linkage check proves clear,
+            just short of the stop block.</figcaption>
+        </figure>
+        <figure class="feature">
+          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/motion/rocker.gif"
+               alt="A crank drives a pinned four-bar linkage until the follower reaches a stop block, the follower and the block flash coral, and the crank turns back"
+               loading="lazy" width="480" height="270">
+          <figcaption><strong>Crank-rocker</strong> shows the same check on a closed four-bar loop.</figcaption>
+        </figure>
+        <figure class="feature">
+          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/motion/tumble.gif"
+               alt="Spinning boxes, a hexagonal prism, a wedge and a tetrahedron drop into a tray and settle"
+               loading="lazy" width="480" height="270">
+          <figcaption><strong>Tumble</strong> drops spinning solids into a tray, where each one comes to
+            rest on a face.</figcaption>
+        </figure>
+        <figure class="feature">
+          <img src="https://raw.githubusercontent.com/lestrrat-3d/decad/main/docs/images/motion/parts-bin.gif"
+               alt="Five modeled parts drop into a tray and settle while a cylinder rolls across the floor"
+               loading="lazy" width="480" height="270">
+          <figcaption><strong>Parts bin</strong> drops five modeled parts to rest while a cylinder rolls
+            across the floor.</figcaption>
         </figure>
       </div>
       <p class="meta"><span class="chip chip-go">Go</span><span class="chip">writes STL, OBJ</span><span class="chip">depends on sketch, r3, units</span></p>
