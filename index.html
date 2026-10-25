@@ -196,7 +196,7 @@
       <p class="tagline">Units of measure for Go.</p>
       <p>
         A <code>Value</code> is a magnitude paired with the unit it is expressed in. A
-        <code>Kind</code> is a vector of exponents over length, mass and angle, so kinds
+        <code>Kind</code> is a vector of exponents over length, mass, angle, time and temperature, so kinds
         compose: multiply two lengths and you get an area, divide mass by volume and you
         get a density. Asking for a length in degrees returns an error rather than a
         silent reinterpretation, which is how the classic CAD-API trap — <code>2</code>
@@ -247,7 +247,7 @@ n := spin.ApplyDir(nrm)  // a DIRECTION: rotated only</code></pre>
       <ul class="features">
         <li>A Fusion-like constraint set: coincidence, tangency, parallel, perpendicular, symmetry, equality and more.</li>
         <li>Degrees-of-freedom and redundancy analysis, conflict detection, and a multi-solution ambiguity probe.</li>
-        <li>Trim, extend, break, fillet, chamfer, mirror, pattern and offset on committed geometry.</li>
+        <li>Trim, extend, break, fillet, chamfer, mirror, pattern and offset on committed geometry, including arcs and circles and offset chains of lines and arcs.</li>
         <li>Closed-region profile detection with exact areas and hole nesting.</li>
         <li>Export to SVG and PNG — optionally annotated with dimensions and constraint glyphs — plus DXF R12 and lossless JSON.</li>
       </ul>
@@ -478,8 +478,8 @@ fmt.Println(report.Status, report.Trustworthy())
   <article class="card card-wide" id="solidlens">
     <figure class="card-figure" style="--plate:#0d1935">
       <img src="https://raw.githubusercontent.com/lestrrat-3d/solidlens/main/docs/images/hero.png"
-           alt="The word Solidlens rendered in 3D above a cyan sphere, a violet pyramid, and a coral cube, on a deep navy background"
-           loading="lazy" width="900" height="300">
+           alt="The word solidlens in white voxel letters above a floating voxel island with a house, a stone tower, pine trees, a footbridge and a waterfall, on a deep navy background"
+           loading="lazy" width="1440" height="810">
     </figure>
     <div class="card-body">
       <h3><a href="https://github.com/lestrrat-3d/solidlens">solidlens</a></h3>
@@ -547,18 +547,38 @@ ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp
 <section class="wrap section">
   <h2>Built on the stack</h2>
 
+  <article class="card card-wide" id="decad-gallery">
+    <figure class="card-figure" style="--plate:#eaeff7">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad-gallery/main/docs/images/gallery.png"
+           alt="A spur gear, helical gear, herringbone gear, cycloidal drive, and bevel gear pairs rendered side by side"
+           loading="lazy" width="1600" height="900">
+    </figure>
+    <div class="card-body">
+      <h3><a href="https://github.com/lestrrat-3d/decad-gallery">decad gallery</a></h3>
+      <p class="tagline">Parametric 3D shapes, patterns, and assemblies built with decad.</p>
+      <p>
+        Each model is a solid body whose dimensions come from inputs such as tooth count,
+        thickness, and bore: spur, helical and herringbone gears, a cycloidal drive, and bevel
+        gear pairs. Every model ships a written specification and a step-by-step map from each
+        construction requirement to a <a href="#sketch">sketch</a> or <a href="#decad">decad</a>
+        operation, with a geometry check at each boundary.
+      </p>
+      <p class="meta"><span class="chip chip-go">Go</span><span class="chip">depends on decad</span></p>
+    </div>
+  </article>
+
   <article class="card card-wide" id="gear-generator">
-    <figure class="card-figure card-figure-row" style="--plate:#a0a4ad">
-      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/spur.png"
-           alt="A cyan spur gear with a central bore, teeth running straight across the rim" loading="lazy">
-      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/helical.png"
-           alt="A violet helical gear, its teeth twisting evenly around the rim" loading="lazy">
-      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/herringbone.png"
-           alt="An amber herringbone gear, its teeth meeting in a chevron at mid-height" loading="lazy">
-      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/bevel.png"
-           alt="A green straight bevel pair meshing at a right angle: a flat 24-tooth gear with a 16-tooth pinion standing on its rim" loading="lazy">
-      <img src="https://raw.githubusercontent.com/lestrrat-3d/fusion360-gear-generator/main/docs/images/gears/cycloidal.png"
-           alt="A cycloidal drive with its output plate lifted off: a blue ring housing holding a red lobed disc and a gold eccentric cam, and a teal plate above it on six pins" loading="lazy">
+    <figure class="card-figure card-figure-row" style="--plate:#eff5f9">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad-gallery/main/models/spurgear/images/hero.png"
+           alt="A blue spur gear with a central bore, teeth running straight across the rim" loading="lazy">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad-gallery/main/models/helicalgear/images/hero.png"
+           alt="A blue helical gear, its teeth slanting evenly around the rim" loading="lazy">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad-gallery/main/models/herringbonegear/images/hero.png"
+           alt="A blue herringbone gear, its teeth meeting in a chevron at mid-height" loading="lazy">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad-gallery/main/models/bevelgear/images/hero.png"
+           alt="Two bevel gear pairs: a blue spiral-tooth pair and an orange straight-tooth pair, each meshing at a right angle" loading="lazy">
+      <img src="https://raw.githubusercontent.com/lestrrat-3d/decad-gallery/main/models/cycloidal/images/hero.png"
+           alt="A cycloidal drive laid out in parts: a gray ring housing, two blue lobed discs, an orange eccentric cam, and a green output plate on six pins" loading="lazy">
     </figure>
     <div class="card-body">
       <h3><a href="https://github.com/lestrrat-3d/fusion360-gear-generator">fusion360-gear-generator</a> <span class="badge">work in progress</span></h3>
@@ -570,8 +590,8 @@ ffmpeg -framerate 24 -i out/frame_%06d.png -c:v libx264 -pix_fmt yuv420p demo.mp
         fully constrained, so moving or editing a generated gear behaves.
       </p>
       <p>
-        Those images are gears the generator actually cut, rendered with
-        <a href="#solidlens">solidlens</a>.
+        The add-in translates the models in <a href="#decad-gallery">decad gallery</a>,
+        and those images are renders of the same models.
       </p>
       <p class="meta"><span class="chip chip-py">Python</span><span class="chip">Fusion 360 add-in</span></p>
     </div>
